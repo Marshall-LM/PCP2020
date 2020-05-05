@@ -7,6 +7,7 @@ from typing import Optional, Callable, Tuple
 Board = np.ndarray
 BoardPiece = np.int8
 PlayerAction = np.int8  # The column to be played
+Bitmap = np.int
 
 # Initialize constant variables
 NO_PLAYER = BoardPiece(0)  # board[i, j] == NO_PLAYER where position is empty
@@ -160,73 +161,91 @@ def apply_player_action(board: Board, action: PlayerAction,
              if the player makes an invalid selection, raises an IndexError
     """
 
-    # Either copy the board
+    # Determine whether the move is valid
+
+
+    # TODO: If the copy_ boolean is set, create a copy of the board
+    #  It's useful in the context of minimax
     if copy_:
         board_copy = board.copy()
-    # Or set board_copy as a pointer to board (to modify in place)
-    else:
-        board_copy = board
 
-    board_copy[top_row(board_copy, action), action] = player
+    # Play in the chosen column. If the column is full, raise an IndexError.
+
+    try:
+        board_copy[top_row(board_copy, action), action] = player
+    # except IndexError:
+    #     raise IndexError('This column is full. Please choose again')
+    except:
+        print('This column is full. Please choose again')
 
     return board_copy
 
 
-def connect_four(board: Board, player: BoardPiece,
-                 last_action: Optional[PlayerAction] = None) -> bool:
+def connect_four(board_map: Bitmap) -> bool:
     """
-    Identify whether the current state of the board results in a win
-    for the given player
+    Identify whether the current bitmap of the board results in a win
+    for the whom it belongs to.
 
-    :param board: 2d array representing current state of the game
+    :param board_map: bitmap representing the state of a player's pieces
     :param player: the player who made the last move (active player)
-    :param last_action: the column the last piece was played in
 
     :return: True if the player who just played has four adjacent pieces,
              False otherwise
     """
 
-    # Shape of board
-    n_rows = board.shape[0]
-    n_cols = board.shape[1]
-    # Min connection (4 in a row wins)
-    mc = 4
-
-    # Improve computation speed by using last_action
-    if last_action is None:
-        col_upper = n_cols
-        col_lower = 0
-    else:
-        col_upper = min(n_cols, last_action + mc - 1)
-        col_lower = max(0, last_action - mc + 1)
-
-    # Slide the mask across the board and check for a win in each position
-    for row in range(n_rows):
-        for col in range(col_lower, col_upper):
-            # Check for vertical wins
-            if (row + mc) <= n_rows:
-                v_vec = board[row:row + mc, col]
-                if np.all(v_vec == player):
-                    return True
-            # Check for horizontal wins
-            if (col + mc) <= n_cols:
-                h_vec = board[row, col:col + mc]
-                if np.all(h_vec == player):
-                    return True
-            if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
-                # Check for \ wins
-                d_block = board[row:row + mc, col:col + mc]
-                if np.all(np.diag(d_block) == player):
-                    return True
-                # Check for / wins
-                b_block = [board[row + mc - 1 - i, i + col]
-                           for i in range(mc - 1, -1, -1)]
-                if np.all(b_block == player):
-                    return True
+    # Horizontal check
+    m = board_map & (board_map >> 1)
+    if m & (m >> 2):
+        return True
+    # Diagonal \ check
+    m = board_map & (board_map >> 7)
+    if m & (m >> 14):
+        return True
+    # Diagonal / check
+    m = board_map & (board_map >> 9)
+    if m & (m >> 18):
+        return True
+    # Vertical check
+    m = board_map & (board_map >> 8)
+    if m & (m >> 16):
+        return True
+    # Nothing found
+    return False
 
 
-def check_end_state(board: Board, player: BoardPiece,
-                    last_action: Optional[PlayerAction] = None) -> GameState:
+def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
+    """
+    Converts the nd.array board into a bitmap for faster calculations. Bitmap used
+    to improve computation speed so that agent can train faster.
+
+    :param board: 2d array representing current state of the game
+    :param player: the player who made the last move (active player)
+
+    :return: two bitmaps representing active player's positions and the positions
+             containing pieces of either player (mask)
+    """
+
+    # Initialize the bitmaps as strings (converted to int in return)
+    position, mask = '', ''
+    bd_shp = board.shape
+
+    # Start with top row
+    for row in range(bd_shp[0] - 1, -1, -1):
+        # Add 0-bits to sentinel column to avoid rollover errors
+        mask += '0'
+        position += '0'
+
+        # Start with right column
+        for col in range(bd_shp[1] - 1, -1, -1):
+            # if board[row, col] != 0:
+            #     print('board[%i, %i] = %i' % (row, col, board[row, col]))
+            mask += ('1' if board[row, col] != NO_PLAYER else '0')
+            position += ('1' if board[row, col] == player else '0')
+
+    return Bitmap(position, 2), Bitmap(mask, 2)
+
+
+def check_end_state(board: Board) -> GameState:
     """
     Returns the current game state for the active player, i.e. has their last
     action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
@@ -240,10 +259,11 @@ def check_end_state(board: Board, player: BoardPiece,
     """
 
     # If connect_four returns True, the active player won
-    if connect_four(board, player, last_action):
+    # if connect_four(board, player, last_action):
+    if connect_four(board):
         return GameState.IS_WIN
     # If the game is not won, and there are no empty spots, the game is a draw
-    elif np.all(board != 0):
+    elif (empty_bit_mask and board) > 0:
         return GameState.IS_DRAW
     # If the game is neither won, nor drawn, continue playing
     else:

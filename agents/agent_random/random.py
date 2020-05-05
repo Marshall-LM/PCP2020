@@ -4,8 +4,7 @@ from agents.common import top_row
 from agents.common import BoardPiece, PlayerAction, SavedState
 
 
-def generate_move_random(board: np.ndarray, player: BoardPiece,
-                         saved_state: Optional[SavedState]
+def generate_move_random(board: np.ndarray, saved_state: Optional[SavedState]
                          ) -> Tuple[PlayerAction, Optional[SavedState]]:
     """ Choose a valid, non-full column randomly and return it as `action
 
@@ -16,15 +15,7 @@ def generate_move_random(board: np.ndarray, player: BoardPiece,
              saved state
     """
 
-    invalid_action = True
-    action = PlayerAction(0)
-
-    while invalid_action:
-        action = PlayerAction(np.random.choice(board.shape[1]))
-        try:
-            top_row(board, action)
-            invalid_action = False
-        except IndexError:
-            continue
+    free_cols = np.arange(board.shape[1])[np.argwhere(board[-1, :] == 0)]
+    action = PlayerAction(np.random.choice(free_cols))
 
     return action, saved_state

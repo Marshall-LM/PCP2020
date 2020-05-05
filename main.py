@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Optional, Callable
+from agents.common import top_row
 from agents.common import PlayerAction, BoardPiece, SavedState, GenMove
 
 
@@ -20,9 +21,14 @@ def user_move(board: np.ndarray, _player: BoardPiece,
     # While action is not a valid move
     while not (0 <= action < board.shape[1]):
         try:
+            # Human player input action
             action = PlayerAction(input("Select column to play (0-6): "))
+            # Test whether the column is full. If it is, top_row will throw
+            # an IndexError
+            top_row(board, action)
         except:
             print('This is not a valid action. Please choose again.')
+            pass # tried continue here and it didn't work either
 
     return action, saved_state
 
@@ -43,8 +49,10 @@ def human_vs_agent(generate_move_1: GenMove,
 
     players = (PLAYER1, PLAYER2)
 
+    # Play two games, where each player gets a chance to go first
     for play_first in (1, -1):
-        # TODO: What does this for loop do?
+        # This loop initializes the variables to speed up computation when
+        # using the numba compiler
         for init, player in zip((init_1, init_2)[::play_first], players):
             init(initialize_game_state(), player)
 
@@ -59,20 +67,26 @@ def human_vs_agent(generate_move_1: GenMove,
             for player, player_name, gen_move, args in zip(
                     players, player_names, gen_moves, gen_args):
 
+                # Time how long a move takes
                 t0 = time.time()
 
+                # Inform the player which letter represents them
                 print(pretty_print_board(board))
                 print(f'{player_name} you are playing with '
                       f'{"X" if player == PLAYER1 else "O"}')
 
+                # Generate an action, either through user input or by an
+                # agent function
                 action, saved_state[player] = gen_move(
                     board.copy(), player, saved_state[player], *args)
 
                 print(f"Move time: {time.time() - t0:.3f}s")
 
+                # Update the board with the action
                 apply_player_action(board, action, player)
                 end_state = check_end_state(board, player)
 
+                # Check to see whether the game is a win or draw
                 if end_state != GameState.STILL_PLAYING:
                     print(pretty_print_board(board))
 
