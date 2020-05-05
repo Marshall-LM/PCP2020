@@ -1,7 +1,6 @@
 import numpy as np
-
 from enum import Enum
-from typing import Optional
+from typing import Optional, Callable, Tuple
 
 
 # Initialize data types
@@ -17,16 +16,29 @@ PLAYER2 = BoardPiece(2)  # board[i, j] == PLAYER2 where player 2 has a piece
 
 
 class GameState(Enum):
-    """ Define the possible game states for reference """
+    """
+    Define the possible game states for reference. Make GameState an Enum so
+    that it can be iterated through, reducing the chance of errors.
+    """
 
     IS_WIN = 1
     IS_DRAW = -1
     STILL_PLAYING = 0
 
 
+class SavedState:
+    pass
+
+
+# TODO: What does this do?
+GenMove = Callable[
+    [np.ndarray, BoardPiece, Optional[SavedState]],  # Arguments for the generate_move function
+    Tuple[PlayerAction, Optional[SavedState]]  # Return type of the generate_move function
+]
+
+
 def initialize_game_state() -> Board:
-    """
-    Initializes a game board for simulation
+    """ Initializes a connect four game board
 
     :return: ndarray, shape (6, 7) and data type (dtype) BoardPiece,
              initialized to 0 (NO_PLAYER).
@@ -59,7 +71,7 @@ def pretty_print_board(board: Board) -> str:
         # For each column in the board
         # Iterate in reverse order so that the bottom left corner is (0,0)
         for col in range(bd_shp[1]):
-            # TODO: USE THIS IS PRINTING 0s IN EMPTY SPACES
+            # TODO: USE THIS IF PRINTING 0s IN EMPTY SPACES
             # board_str += str(board[row,col]) + '  '
 
             # TODO: USE THIS BLOCK IF PRINTING SPACES IN EMPTY SPACES
@@ -85,6 +97,8 @@ def pretty_print_board(board: Board) -> str:
     for col in range(bd_shp[1] - 1):
         board_str += str(col) + '  '
 
+    # Join
+    # '  '.join(list(range()))
     board_str += str(col + 1) + '|\n'
 
     return board_str
@@ -102,32 +116,34 @@ def apply_player_action(board: Board, action: PlayerAction,
     :param action: the column the current player played their piece in
     :param player: the player making the current move (active player)
     :param copy_: boolean indicating whether to copy board before modifying
+
     :return: returns a 2d array representing the updated board game state,
              if the player makes an invalid selection, raises an IndexError
     """
 
     # TODO: If the copy_ boolean is set, create a copy of the board
+    #  It's useful in the context of minimax
     if copy_:
-        prev_board = board.copy()
+        board_copy = board.copy()
 
-    # If the column does not exist, raise an IndexError
-    board_cols = np.arange(board.shape[1])
+    # THIS MIGHT BE TAKEN CARE OF IN USER_MOVE
+    # # If the column does not exist, raise an IndexError
+    # board_cols = np.arange(board_copy.shape[1])
+    # try:
+    #     board_cols[action] = action
+    # except IndexError:
+    #     raise IndexError('You have selected an invalid column to play in. '
+    #                      'Please choose again')
+
+    # Play in the chosen column. If the column is full, raise an IndexError
     try:
-        board_cols[action] = action
-    except IndexError:
-        raise IndexError('You have selected an invalid column to play in. '
-                         'Please choose again')
+        board_copy[top_row(board_copy, action), action] = player
+    # except IndexError:
+    #     raise IndexError('This column is full. Please choose again')
+    except:
+        print('This column is full. Please choose again')
 
-    # Calculate the row to be played in
-    row_ind = top_row(board, action) + 1
-
-    # If the column is full, raise an IndexError
-    try:
-        board[row_ind, action] = player
-    except IndexError:
-        raise IndexError('This column is full. Please choose again')
-
-    return board
+    return board_copy
 
 
 def string_to_board(pp_board: str) -> Board:
@@ -200,6 +216,7 @@ def connect_four(board: Board, player: BoardPiece,
     :param board: 2d array representing current state of the game
     :param player: the player who made the last move (active player)
     :param last_action: the column the last piece was played in
+
     :return: True if the player who just played has four adjacent pieces,
              False otherwise
     """
@@ -245,8 +262,8 @@ def connect_four(board: Board, player: BoardPiece,
 
             # Check the rows and columns for a win
             for k in range(md):
-                if ((np.all(board_sub[:, k]) and board_sub[0, k] == player) or
-                        (np.all(board_sub[k, :]) and board_sub[k, 0] == player)):
+                if (np.all(np.argwhere(board_sub[:, k] == player)) or
+                        np.all(np.argwhere(board_sub[k, :] == player))):
                     win = True
                     break
 
@@ -262,6 +279,7 @@ def connect_four_bits(board_map: Bitmap, player: BoardPiece,
     :param board_map: bitmap representing the state of a player's pieces
     :param player: the player who made the last move (active player)
     :param last_action: the column the last piece was played in
+
     :return: True if the player who just played has four adjacent pieces,
              False otherwise
     """
@@ -296,6 +314,7 @@ def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
 
     :param board: 2d array representing current state of the game
     :param player: the player who made the last move (active player)
+
     :return: two bitmaps representing active player's positions and the positions
              containing pieces of either player (mask)
     """
@@ -314,8 +333,8 @@ def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
         for col in range(bd_shp[1] - 1, -1, -1):
             # if board[row, col] != 0:
             #     print('board[%i, %i] = %i' % (row, col, board[row, col]))
-            mask += '1' if board[row, col] != NO_PLAYER else '0'
-            position += '1' if board[row, col] == player else '0'
+            mask += ('1' if board[row, col] != NO_PLAYER else '0')
+            position += ('1' if board[row, col] == player else '0')
 
     return Bitmap(position, 2), Bitmap(mask, 2)
 
@@ -330,14 +349,16 @@ def check_end_state(board: Board, player: BoardPiece,
     :param board: 2d array representing current state of the game
     :param player: the player who made the last move (active player)
     :param last_action: the column the last piece was played in
+
     :return: GameState class constant indicating new state of game
     """
 
     # If connect_four returns True, the active player won
-    if connect_four(board, player, last_action):
+    # if connect_four(board, player, last_action):
+    if connect_four(board, player):
         new_state = GameState.IS_WIN
     # If the game is not won, and there are no empty spots, the game is a draw
-    elif np.any(board != 0):
+    elif np.all(board != 0):
         new_state = GameState.IS_DRAW
     # If using bit masks
     # elif (empty_bit_mask and board) > 0:
@@ -349,24 +370,37 @@ def check_end_state(board: Board, player: BoardPiece,
     return new_state
 
 
-def top_row(board: Board, col: np.int) -> np.int:
+def top_row(board: Board, col: PlayerAction):
     """
     Returns the highest row containing a board piece for the given column.
-    Used to update the game state and determine the top row the must be
+    Used to update the game state and determine the top row that must be
     checked to determine a win.
 
     :param board: 2d array representing current state of the game
     :param col: the column the last piece was played in
+
     :return: returns the index of the highest row containing a board piece
     """
 
-    # TODO: This function does not work for empty columns, and this is
-    #  affecting the player move function. Fix this.
+    play_col = board[:, col]
+    if play_col[-1] != 0:
+        raise
 
-    try:
-        return max(np.argwhere(board[:, col]))[0]
-    except ValueError:
-        return 0
+    if np.argwhere(play_col == 0).size == 0:
+        raise IndexError('This column is full')
+    else:
+        return min(np.argwhere(play_col == 0)[0])
+
+    # top_row_open = min(np.argwhere(board[:, col] == 0))[0]
+    # if not top_row_open:
+    #     raise
+    # return min(np.argwhere(board[:, col] == 0))[0]
+    # try:
+    #     return min(np.argwhere(board[:, col] == 0))[0]
+    # except ValueError:
+    #     return -1
+    #     raise IndexError
+
 
 # TODO: Check whether bitmap implementation actually improves computation
 #  speed for the overall program, or whether converting back and forth
