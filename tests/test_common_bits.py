@@ -1,6 +1,5 @@
 import numpy as np
-
-import agents.common as cm
+import agents.common_bits as cm
 
 
 def test_initialize_game_state():
@@ -118,150 +117,6 @@ def test_string_to_board():
     return
 
 
-def test_connect_four():
-    # Test a diagonal
-    test_board = cm.initialize_game_state()
-    test_board[0, 3] = cm.PLAYER1
-    test_board[1, 4] = cm.PLAYER1
-    test_board[2, 5] = cm.PLAYER1
-    test_board[3, 6] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test the same diagonal for the other player
-    test_board = cm.initialize_game_state()
-    test_board[0, 3] = cm.PLAYER2
-    test_board[1, 4] = cm.PLAYER2
-    test_board[2, 5] = cm.PLAYER2
-    test_board[3, 6] = cm.PLAYER2
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER2)
-
-    # Rotate the diagonal
-    test_board = cm.initialize_game_state()
-    test_board[0, 6] = cm.PLAYER1
-    test_board[1, 5] = cm.PLAYER1
-    test_board[2, 4] = cm.PLAYER1
-    test_board[3, 3] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test a row at the top
-    test_board = cm.initialize_game_state()
-    test_board[5, 3] = cm.PLAYER1
-    test_board[5, 4] = cm.PLAYER1
-    test_board[5, 5] = cm.PLAYER1
-    test_board[5, 6] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test a row at the bottom
-    test_board = cm.initialize_game_state()
-    test_board[0, 0] = cm.PLAYER1
-    test_board[0, 1] = cm.PLAYER1
-    test_board[0, 2] = cm.PLAYER1
-    test_board[0, 3] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test a column on the left
-    test_board = cm.initialize_game_state()
-    test_board[2, 0] = cm.PLAYER1
-    test_board[3, 0] = cm.PLAYER1
-    test_board[4, 0] = cm.PLAYER1
-    test_board[5, 0] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test a column on the right
-    test_board = cm.initialize_game_state()
-    test_board[0, 6] = cm.PLAYER1
-    test_board[1, 6] = cm.PLAYER1
-    test_board[2, 6] = cm.PLAYER1
-    test_board[3, 6] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test some things in the middle
-    test_board = cm.initialize_game_state()
-    test_board[2, 5] = cm.PLAYER1
-    test_board[3, 4] = cm.PLAYER1
-    test_board[4, 3] = cm.PLAYER1
-    test_board[5, 2] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    test_board = cm.initialize_game_state()
-    test_board[0, 2] = cm.PLAYER1
-    test_board[1, 3] = cm.PLAYER1
-    test_board[2, 4] = cm.PLAYER1
-    test_board[3, 5] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1)
-
-    # Test the last_action option for column 6
-    test_board = cm.initialize_game_state()
-    test_board[0, 3] = cm.PLAYER1
-    test_board[1, 4] = cm.PLAYER1
-    test_board[2, 5] = cm.PLAYER1
-    test_board[3, 6] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(6))
-
-    # Test the last_action option for column 5
-    test_board = cm.initialize_game_state()
-    test_board[0, 2] = cm.PLAYER1
-    test_board[1, 3] = cm.PLAYER1
-    test_board[2, 4] = cm.PLAYER1
-    test_board[3, 5] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(5))
-
-    # Test the last_action option for column 1
-    test_board = cm.initialize_game_state()
-    test_board[0, 1] = cm.PLAYER1
-    test_board[1, 1] = cm.PLAYER1
-    test_board[2, 1] = cm.PLAYER1
-    test_board[3, 1] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(1))
-
-    # Test the last_action option for column 2 diagonal pattern
-    test_board = cm.initialize_game_state()
-    test_board[0, 1] = cm.PLAYER1
-    test_board[1, 2] = cm.PLAYER1
-    test_board[2, 3] = cm.PLAYER1
-    test_board[3, 4] = cm.PLAYER1
-    board_str = cm.pretty_print_board(test_board)
-    print('')
-    print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(2))
-
-
 def test_connect_four_bits():
     # Test a diagonal
     test_board = cm.initialize_game_state()
@@ -269,11 +124,11 @@ def test_connect_four_bits():
     test_board[1, 4] = cm.PLAYER1
     test_board[2, 5] = cm.PLAYER1
     test_board[3, 6] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test the same diagonal for the other player
     test_board = cm.initialize_game_state()
@@ -281,11 +136,12 @@ def test_connect_four_bits():
     test_board[1, 4] = cm.PLAYER2
     test_board[2, 5] = cm.PLAYER2
     test_board[3, 6] = cm.PLAYER2
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER2)[0]
+    player_map, mask_board = cm.board_to_bitmap(test_board, cm.PLAYER1)
+    player_map2 = player_map ^ mask_board
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER2)
+    assert cm.connect_four(player_map2)
 
     # Rotate the diagonal
     test_board = cm.initialize_game_state()
@@ -293,11 +149,11 @@ def test_connect_four_bits():
     test_board[1, 5] = cm.PLAYER1
     test_board[2, 4] = cm.PLAYER1
     test_board[3, 3] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test a row at the top
     test_board = cm.initialize_game_state()
@@ -305,11 +161,11 @@ def test_connect_four_bits():
     test_board[5, 4] = cm.PLAYER1
     test_board[5, 5] = cm.PLAYER1
     test_board[5, 6] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test a row at the bottom
     test_board = cm.initialize_game_state()
@@ -317,11 +173,11 @@ def test_connect_four_bits():
     test_board[0, 1] = cm.PLAYER1
     test_board[0, 2] = cm.PLAYER1
     test_board[0, 3] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test a column on the left
     test_board = cm.initialize_game_state()
@@ -329,11 +185,11 @@ def test_connect_four_bits():
     test_board[3, 0] = cm.PLAYER1
     test_board[4, 0] = cm.PLAYER1
     test_board[5, 0] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test a column on the right
     test_board = cm.initialize_game_state()
@@ -341,11 +197,11 @@ def test_connect_four_bits():
     test_board[1, 6] = cm.PLAYER1
     test_board[2, 6] = cm.PLAYER1
     test_board[3, 6] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test some things in the middle
     test_board = cm.initialize_game_state()
@@ -353,22 +209,22 @@ def test_connect_four_bits():
     test_board[3, 4] = cm.PLAYER1
     test_board[4, 3] = cm.PLAYER1
     test_board[5, 2] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     test_board = cm.initialize_game_state()
     test_board[0, 2] = cm.PLAYER1
     test_board[1, 3] = cm.PLAYER1
     test_board[2, 4] = cm.PLAYER1
     test_board[3, 5] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1)
+    assert cm.connect_four(player_map)
 
     # Test the last_action option for column 6
     test_board = cm.initialize_game_state()
@@ -376,11 +232,11 @@ def test_connect_four_bits():
     test_board[1, 4] = cm.PLAYER1
     test_board[2, 5] = cm.PLAYER1
     test_board[3, 6] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(6))
+    assert cm.connect_four(player_map)
 
     # Test the last_action option for column 5
     test_board = cm.initialize_game_state()
@@ -388,11 +244,11 @@ def test_connect_four_bits():
     test_board[1, 3] = cm.PLAYER1
     test_board[2, 4] = cm.PLAYER1
     test_board[3, 5] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(5))
+    assert cm.connect_four(player_map)
 
     # Test the last_action option for column 1
     test_board = cm.initialize_game_state()
@@ -400,11 +256,11 @@ def test_connect_four_bits():
     test_board[1, 1] = cm.PLAYER1
     test_board[2, 1] = cm.PLAYER1
     test_board[3, 1] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(1))
+    assert cm.connect_four(player_map)
 
     # Test the last_action option for column 2 diagonal pattern
     test_board = cm.initialize_game_state()
@@ -412,11 +268,11 @@ def test_connect_four_bits():
     test_board[1, 2] = cm.PLAYER1
     test_board[2, 3] = cm.PLAYER1
     test_board[3, 4] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(2))
+    assert cm.connect_four(player_map)
 
     # Test for overflow issues - horizontal
     test_board = cm.initialize_game_state()
@@ -424,11 +280,11 @@ def test_connect_four_bits():
     test_board[0, 5] = cm.PLAYER1
     test_board[0, 6] = cm.PLAYER1
     test_board[1, 0] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert not cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(2))
+    assert not cm.connect_four(player_map)
 
     # Test for overflow issues - diagonal
     test_board = cm.initialize_game_state()
@@ -436,11 +292,11 @@ def test_connect_four_bits():
     test_board[1, 1] = cm.PLAYER1
     test_board[2, 0] = cm.PLAYER1
     test_board[2, 6] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert not cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(2))
+    assert not cm.connect_four(player_map)
 
     # Test for overflow issues - vertical
     test_board = cm.initialize_game_state()
@@ -449,11 +305,11 @@ def test_connect_four_bits():
     test_board[3, 3] = cm.PLAYER1
     test_board[4, 0] = cm.PLAYER1
     test_board[2, 0] = cm.PLAYER1
-    board_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
+    player_map = cm.board_to_bitmap(test_board, cm.PLAYER1)[0]
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert not cm.connect_four_bits(board_map, cm.PLAYER1, cm.PlayerAction(2))
+    assert not cm.connect_four(player_map)
 
 
 def test_board_to_bitmap():

@@ -200,28 +200,54 @@ def connect_four(board: Board, player: BoardPiece,
     else:
         col_upper = min(n_cols, last_action + mc - 1)
         col_lower = max(0, last_action - mc + 1)
+    col_upper = (mc if col_upper < mc else col_upper)
 
     # Slide the mask across the board and check for a win in each position
-    for row in range(n_rows):
-        for col in range(col_lower, col_upper):
+    for row in range(n_rows - mc + 1):
+        for col in range(col_lower, col_upper - mc + 1):
             # Check for vertical wins
-            if (row + mc) <= n_rows:
-                v_vec = board[row:row + mc, col]
-                if np.all(v_vec == player):
-                    return True
+            # if (row + mc) <= n_rows:
+            #     v_vec = board[row:row + mc, col]
+            #     if np.all(v_vec == player):
+            #         return True
+            v_vec = board[row:row + mc, col]
+            if np.all(v_vec == player):
+                return True
             # Check for horizontal wins
-            if (col + mc) <= n_cols:
-                h_vec = board[row, col:col + mc]
-                if np.all(h_vec == player):
-                    return True
-            if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
-                # Check for \ wins
-                block = board[row:row + mc, col:col + mc]
-                if np.all(np.diag(block) == player):
-                    return True
-                # Check for / wins
-                if np.all(np.diag(block[::-1, :]) == player):
-                    return True
+            # if (col + mc) <= n_cols:
+            #     h_vec = board[row, col:col + mc]
+            #     if np.all(h_vec == player):
+            #         return True
+            h_vec = board[row, col:col + mc]
+            if np.all(h_vec == player):
+                return True
+            # if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
+            #     # Check for \ wins
+            #     block = board[row:row + mc, col:col + mc]
+            #     if np.all(np.diag(block) == player):
+            #         return True
+            #     # Check for / wins
+            #     if np.all(np.diag(block[::-1, :]) == player):
+            #         return True
+            # Check for \ wins
+            block = board[row:row + mc, col:col + mc]
+            if np.all(np.diag(block) == player):
+                return True
+            # Check for / wins
+            if np.all(np.diag(block[::-1, :]) == player):
+                return True
+
+    for row in range(n_rows - mc + 1, n_rows):
+        for col in range(col_lower, col_upper - mc + 1):
+            h_vec = board[row, col:col + mc]
+            if np.all(h_vec == player):
+                return True
+
+    for row in range(n_rows - mc + 1):
+        for col in range(col_upper - mc + 1, col_upper):
+            v_vec = board[row, col:col + mc]
+            if np.all(v_vec == player):
+                return True
 
 
 def check_end_state(board: Board, player: BoardPiece,

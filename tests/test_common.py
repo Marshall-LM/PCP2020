@@ -153,7 +153,7 @@ def test_connect_four():
 
     # Test a row at the top
     test_board = cm.initialize_game_state()
-    test_board[5, 3:] = cm.PLAYER1
+    test_board[-1, 3:] = cm.PLAYER1
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)

@@ -2,6 +2,7 @@ import numpy as np
 from typing import Optional, Tuple
 from agents.common import Board, BoardPiece, PlayerAction, SavedState,\
     NO_PLAYER, apply_player_action
+from agents.common_bits import board_to_bitmap, connect_four
 
 GameScore = np.int8
 
@@ -50,8 +51,8 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
     # If the node is at the max depth, a terminal node, or is the root node
     # return the heursitic score of the node
     max_depth = 4
-    if depth == max_depth or np.all(board != 0):
     # if depth == 0 or np.all(board != 0):
+    if depth == max_depth or np.all(board != 0):
         return heuristic_solver(board, player, max_player), None
 
     # For each potential action, call minimax
@@ -59,8 +60,8 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
         score = -np.inf
         for col in potential_actions:
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
-                                            False, depth + 1)
+            new_score, new_action = minimax(new_board, player, False,
+                                            depth + 1)
             new_score -= depth
             if new_score > score:
                 score = new_score
@@ -70,8 +71,8 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
         score = np.inf
         for col in potential_actions:
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
-                                            True, depth + 1)
+            new_score, new_action = minimax(new_board, player, True,
+                                            depth + 1)
             new_score += depth
             if new_score < score:
                 score = new_score
@@ -93,59 +94,150 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
     # Initialize the score
     score = 0
     two_pts = 1
-    three_pts = 2
-    win_pts = 5
+    three_pts = 4
+    win_pts = 25
 
     # Slide the mask across the board and check for a win in each position
-    for row in range(n_rows):
-        for col in range(n_cols):
-            # Check for vertical wins
-            if (row + mc) <= n_rows:
-                v_vec = board[row:row + mc, col]
-                if np.all(v_vec == player):
-                    score += win_pts
-                elif (len(np.argwhere(v_vec == player)) == 3 and
-                      len(np.argwhere(v_vec == NO_PLAYER)) == 1):
-                    score += three_pts
-                elif (len(np.argwhere(v_vec == player)) == 2 and
-                      len(np.argwhere(v_vec == NO_PLAYER)) == 2):
-                    score += two_pts
-            # Check for horizontal wins
-            if (col + mc) <= n_cols:
-                h_vec = board[row, col:col + mc]
-                if np.all(h_vec == player):
-                    score += win_pts
-                elif (len(np.argwhere(h_vec == player)) == 3 and
-                      len(np.argwhere(h_vec == NO_PLAYER)) == 1):
-                    score += three_pts
-                elif (len(np.argwhere(h_vec == player)) == 2 and
-                      len(np.argwhere(h_vec == NO_PLAYER)) == 2):
-                    score += two_pts
-            if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
-                # Check for \ wins
-                block_mask = board[row:row + mc, col:col + mc]
-                d_block = np.diag(block_mask)
-                if np.all(d_block == player):
-                    score += win_pts
-                elif (len(np.argwhere(d_block == player)) == 3 and
-                      len(np.argwhere(d_block == NO_PLAYER)) == 1):
-                    score += three_pts
-                elif (len(np.argwhere(d_block == player)) == 2 and
-                      len(np.argwhere(d_block == NO_PLAYER)) == 2):
-                    score += two_pts
-                # Check for / wins
-                b_block = np.diag(block_mask[::-1, :])
-                if np.all(b_block == player):
-                    score += win_pts
-                elif (len(np.argwhere(b_block == player)) == 3 and
-                      len(np.argwhere(b_block == NO_PLAYER)) == 1):
-                    score += three_pts
-                elif (len(np.argwhere(b_block == player)) == 2 and
-                      len(np.argwhere(b_block == NO_PLAYER)) == 2):
-                    score += two_pts
+    min_player = (player % 2 + 1)
+    for row in range(n_rows - mc + 1):
+        for col in range(n_cols - mc + 1):
+            # Accumulate score for max_player position
+            # Check for vertical points
+            v_vec = board[row:row + mc, col]
+            if np.all(v_vec == player):
+                score += win_pts
+            elif (len(np.argwhere(v_vec == player)) == 3 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(v_vec == player)) == 2 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+                score += two_pts
+            # Check for horizontal points
+            h_vec = board[row, col:col + mc]
+            if np.all(h_vec == player):
+                score += win_pts
+            elif (len(np.argwhere(h_vec == player)) == 3 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(h_vec == player)) == 2 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+                score += two_pts
+            # Check for \ points
+            block_mask = board[row:row + mc, col:col + mc]
+            d_block = np.diag(block_mask)
+            if np.all(d_block == player):
+                score += win_pts
+            elif (len(np.argwhere(d_block == player)) == 3 and
+                  len(np.argwhere(d_block == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(d_block == player)) == 2 and
+                  len(np.argwhere(d_block == NO_PLAYER)) == 2):
+                score += two_pts
+            # Check for / points
+            b_block = np.diag(block_mask[::-1, :])
+            if np.all(b_block == player):
+                score += win_pts
+            elif (len(np.argwhere(b_block == player)) == 3 and
+                  len(np.argwhere(b_block == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(b_block == player)) == 2 and
+                  len(np.argwhere(b_block == NO_PLAYER)) == 2):
+                score += two_pts
 
-    # score = np.random.randint(-20, 20)
+            # Reduce score for min_player position
+            if np.all(v_vec == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(v_vec == min_player)) == 3 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(v_vec == min_player)) == 2 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+                score -= two_pts
+            # Check for horizontal points
+            if np.all(h_vec == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(h_vec == min_player)) == 3 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(h_vec == min_player)) == 2 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+                score -= two_pts
+            # Check for \ points
+            if np.all(d_block == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(d_block == min_player)) == 3 and
+                  len(np.argwhere(d_block == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(d_block == min_player)) == 2 and
+                  len(np.argwhere(d_block == NO_PLAYER)) == 2):
+                score -= two_pts
+            # Check for / points
+            if np.all(b_block == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(b_block == min_player)) == 3 and
+                  len(np.argwhere(b_block == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(b_block == min_player)) == 2 and
+                  len(np.argwhere(b_block == NO_PLAYER)) == 2):
+                score -= two_pts
+
+    for row in range(n_rows - mc + 1, n_rows):
+        for col in range(n_cols):
+            h_vec = board[row, col:col + mc]
+            # Accumulate score for max_player position
+            if np.all(h_vec == player):
+                score += win_pts
+            elif (len(np.argwhere(h_vec == player)) == 3 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(h_vec == player)) == 2 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+                score += two_pts
+            # Reduce score for min_player position
+            if np.all(h_vec == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(h_vec == min_player)) == 3 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(h_vec == min_player)) == 2 and
+                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+                score -= two_pts
+
+    for row in range(n_rows - mc + 1):
+        for col in range(n_cols - mc + 1, n_cols):
+            v_vec = board[row:row + mc, col]
+            # Accumulate score for max_player position
+            if np.all(v_vec == player):
+                score += win_pts
+            elif (len(np.argwhere(v_vec == player)) == 3 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+                score += three_pts
+            elif (len(np.argwhere(v_vec == player)) == 2 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+                score += two_pts
+            # Reduce score for min_player position
+            if np.all(v_vec == min_player):
+                score -= win_pts
+            elif (len(np.argwhere(v_vec == min_player)) == 3 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+                score -= three_pts
+            elif (len(np.argwhere(v_vec == min_player)) == 2 and
+                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+                score -= two_pts
+
     if max_player:
         return GameScore(score)
     else:
         return GameScore(-score)
+
+
+# def heuristic_solver(board: Board, player: BoardPiece, max_player: bool = True):
+#     max_player_board, mask_board = board_to_bitmap(board, player)
+#     min_player_board = max_player_board ^ mask_board
+#     score = 0
+#     if connect_four(max_player_board):
+#         score += 10
+#     if connect_four(min_player_board):
+#         score -= 10
+#
+#     return score

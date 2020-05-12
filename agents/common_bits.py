@@ -90,7 +90,7 @@ def pretty_print_board(board: Board) -> str:
     # Add a row that shows the column numbers
     columns = np.arange(bd_shp[1])
     board_str += '|'
-    for col in columns[:-2]:
+    for col in columns[:-1]:
         board_str += str(col) + '  '
 
     # Join
@@ -187,7 +187,6 @@ def connect_four(board_map: Bitmap) -> bool:
     for the whom it belongs to.
 
     :param board_map: bitmap representing the state of a player's pieces
-    :param player: the player who made the last move (active player)
 
     :return: True if the player who just played has four adjacent pieces,
              False otherwise
@@ -245,21 +244,18 @@ def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
     return Bitmap(position, 2), Bitmap(mask, 2)
 
 
-def check_end_state(board: Board) -> GameState:
+def check_end_state(board: Bitmap) -> GameState:
     """
     Returns the current game state for the active player, i.e. has their last
     action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
     or is play still on-going (GameState.STILL_PLAYING)?
 
     :param board: 2d array representing current state of the game
-    :param player: the player who made the last move (active player)
-    :param last_action: the column the last piece was played in
 
     :return: GameState class constant indicating new state of game
     """
 
     # If connect_four returns True, the active player won
-    # if connect_four(board, player, last_action):
     if connect_four(board):
         return GameState.IS_WIN
     # If the game is not won, and there are no empty spots, the game is a draw

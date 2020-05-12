@@ -19,16 +19,41 @@ def test_heuristic_solver():
     # print(board_str)
     # assert agm.heuristic_solver(test_board, cm.PLAYER2, False) == -6
 
+    # test_board = cm.initialize_game_state()
+    # test_board[0, 2:4] = cm.PLAYER1
+    # test_board[1, 2] = cm.PLAYER1
+    # test_board[0, 1] = cm.PLAYER2
+    # test_board[2, 2] = cm.PLAYER2
+    # test_board[1, 3] = cm.PLAYER2
+    # board_str = cm.pretty_print_board(test_board)
+    # print('')
+    # print(board_str)
+    # assert agm.heuristic_solver(test_board, cm.PLAYER1, True) == 0
+    # test_board_cp = test_board.copy()
+    # assert agm.minimax(test_board_cp, cm.PLAYER1, True, 0)[1] == 4
+
     test_board = cm.initialize_game_state()
-    test_board[0, 2:4] = cm.PLAYER1
-    test_board[1, 2] = cm.PLAYER1
-    test_board[0, 1] = cm.PLAYER2
-    test_board[2, 2] = cm.PLAYER2
+    test_board[0, 3:6] = cm.PLAYER1
     test_board[1, 3] = cm.PLAYER2
+    test_board[0, 2] = cm.PLAYER2
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert agm.heuristic_solver(test_board, cm.PLAYER1, True) == 2
-    assert agm.heuristic_solver(test_board, cm.PLAYER2, False) == 2
+    assert agm.heuristic_solver(test_board, cm.PLAYER2, True) == -3
     test_board_cp = test_board.copy()
-    assert agm.minimax(test_board_cp, cm.PLAYER1, True, 0) == (10, 4)
+    assert agm.minimax(test_board_cp, cm.PLAYER2, True, 0)[1] == 6
+
+    test_board = cm.initialize_game_state()
+    test_board[:3, 1] = cm.PLAYER1
+    test_board[0, 3] = cm.PLAYER1
+    test_board[3, 1] = cm.PLAYER2
+    test_board[0, 2] = cm.PLAYER2
+    test_board[1, 3] = cm.PLAYER2
+    test_board[0, 4] = cm.PLAYER2
+    board_str = cm.pretty_print_board(test_board)
+    print('')
+    print(board_str)
+    assert agm.heuristic_solver(test_board, cm.PLAYER2, True) == -3
+    test_board_cp = test_board.copy()
+    assert (agm.minimax(test_board_cp, cm.PLAYER2, True, 0)[1] == 0 or
+            agm.minimax(test_board_cp, cm.PLAYER2, True, 0)[1] == 4)
