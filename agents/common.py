@@ -6,7 +6,7 @@ from typing import Optional, Callable, Tuple
 # Initialize data types
 Board = np.ndarray
 BoardPiece = np.int8
-PlayerAction = np.int8  # The column to be played
+PlayerAction = np.int8
 
 # Initialize constant variables
 NO_PLAYER = BoardPiece(0)  # board[i, j] == NO_PLAYER where position is empty
@@ -31,7 +31,7 @@ class SavedState:
 
 
 # This provides the type hints for the generate_move function family
-GenMove = Callable[[np.ndarray, BoardPiece, Optional[SavedState]],
+GenMove = Callable[[Board, BoardPiece, Optional[SavedState]],
                    Tuple[PlayerAction, Optional[SavedState]]]
 
 
@@ -89,7 +89,7 @@ def pretty_print_board(board: Board) -> str:
     # Add a row that shows the column numbers
     columns = np.arange(bd_shp[1])
     board_str += '|'
-    for col in columns[:-2]:
+    for col in columns[:-1]:
         board_str += str(col) + '  '
 
     # Join
@@ -187,8 +187,9 @@ def connect_four(board: Board, player: BoardPiece,
     """
 
     # Shape of board
-    n_rows = board.shape[0]
-    n_cols = board.shape[1]
+    n_rows, n_cols = board.shape
+    # n_rows = board.shape[0]
+    # n_cols = board.shape[1]
     # Min connection (4 in a row wins)
     mc = 4
 
@@ -215,13 +216,11 @@ def connect_four(board: Board, player: BoardPiece,
                     return True
             if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
                 # Check for \ wins
-                d_block = board[row:row + mc, col:col + mc]
-                if np.all(np.diag(d_block) == player):
+                block = board[row:row + mc, col:col + mc]
+                if np.all(np.diag(block) == player):
                     return True
                 # Check for / wins
-                b_block = [board[row + mc - 1 - i, i + col]
-                           for i in range(mc - 1, -1, -1)]
-                if np.all(b_block == player):
+                if np.all(np.diag(block[::-1, :]) == player):
                     return True
 
 
@@ -263,10 +262,11 @@ def top_row(board: Board, col: PlayerAction):
     """
 
     play_col = board[:, col]
+    play_col = play_col.reshape(len(play_col))
     if play_col[-1] != 0:
         raise IndexError('This column is full')
     else:
-        return min(np.argwhere(play_col == 0)[0])
+        return np.min(np.argwhere(play_col == 0))
 
 
 # TODO: Check whether bitmap implementation actually improves computation

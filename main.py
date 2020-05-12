@@ -1,10 +1,11 @@
 import numpy as np
 from typing import Optional, Callable
 from agents.common import top_row
-from agents.common import PlayerAction, BoardPiece, SavedState, GenMove
+from agents.common import PlayerAction, Board, BoardPiece, SavedState, GenMove
+from agents.agent_minimax import generate_move
 
 
-def user_move(board: np.ndarray, _player: BoardPiece,
+def user_move(board: Board, _player: BoardPiece,
               saved_state: Optional[SavedState]):
     """ Prompts the human player to select a column to play in
 
@@ -26,9 +27,10 @@ def user_move(board: np.ndarray, _player: BoardPiece,
             # Test whether the column is full. If it is, top_row will throw
             # an IndexError
             top_row(board, action)
-        except:
+        except IndexError:
             print('This is not a valid action. Please choose again.')
-            pass # tried continue here and it didn't work either
+            action = -1
+            continue
 
     return action, saved_state
 
@@ -101,4 +103,5 @@ def human_vs_agent(generate_move_1: GenMove,
 
 
 if __name__ == "__main__":
-    human_vs_agent(user_move)
+    # human_vs_agent(user_move)
+    human_vs_agent(generate_move)

@@ -1,5 +1,4 @@
 import numpy as np
-
 import agents.common as cm
 
 
@@ -229,11 +228,11 @@ def test_connect_four():
 
     # Test the last_action option for column 1
     test_board = cm.initialize_game_state()
-    test_board[:4, 1] = cm.PLAYER1
+    test_board[:4, 0] = cm.PLAYER1
     board_str = cm.pretty_print_board(test_board)
     print('')
     print(board_str)
-    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(1))
+    assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(0))
 
     # Test the last_action option for column 2 diagonal pattern
     test_board = cm.initialize_game_state()
