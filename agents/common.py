@@ -245,7 +245,7 @@ def connect_four(board: Board, player: BoardPiece,
 
     for row in range(n_rows - mc + 1):
         for col in range(col_upper - mc + 1, col_upper):
-            v_vec = board[row, col:col + mc]
+            v_vec = board[row:row + mc, col]
             if np.all(v_vec == player):
                 return True
 
@@ -294,6 +294,14 @@ def top_row(board: Board, col: PlayerAction):
     else:
         return np.min(np.argwhere(play_col == 0))
 
+
+def switch_player(player: BoardPiece):
+    """ Takes a player argument, and returns the other player
+
+    :param player: the active player
+    :return: the inactive player
+    """
+    return BoardPiece(player % 2 + 1)
 
 # TODO: Check whether bitmap implementation actually improves computation
 #  speed for the overall program, or whether converting back and forth

@@ -245,6 +245,26 @@ def test_connect_four():
     print(board_str)
     assert cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(2))
 
+    # Test the last_action option for column 2 diagonal pattern
+    test_board = cm.initialize_game_state()
+    test_board[:3, 2] = cm.PLAYER1
+    test_board[0, 3] = cm.PLAYER1
+    test_board[2, 3] = cm.PLAYER1
+    test_board[1, 5] = cm.PLAYER1
+    test_board[4, 2] = cm.PLAYER1
+    test_board[5, 2:4] = cm.PLAYER1
+    test_board[3, 5] = cm.PLAYER1
+    test_board[0, 1] = cm.PLAYER2
+    test_board[1, 3:5] = cm.PLAYER2
+    test_board[0, 4:] = cm.PLAYER2
+    test_board[2, 5] = cm.PLAYER2
+    test_board[4, 3] = cm.PLAYER2
+    test_board[3, 2:4] = cm.PLAYER2
+    board_str = cm.pretty_print_board(test_board)
+    print('')
+    print(board_str)
+    assert not cm.connect_four(test_board, cm.PLAYER1, cm.PlayerAction(2))
+
 
 def test_check_end_state():
 

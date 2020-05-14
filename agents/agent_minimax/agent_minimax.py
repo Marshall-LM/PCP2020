@@ -1,8 +1,8 @@
 import numpy as np
 from typing import Optional, Tuple
 from agents.common import Board, BoardPiece, PlayerAction, SavedState,\
-    NO_PLAYER, apply_player_action
-from agents.common_bits import board_to_bitmap, connect_four
+    NO_PLAYER, apply_player_action, connect_four
+# from agents.common_bits import board_to_bitmap, connect_four
 
 GameScore = np.int8
 
@@ -45,8 +45,9 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
 
     # Make a list of columns that can be played in
     potential_actions = np.argwhere(board[-1, :] == 0)
+    potential_actions = potential_actions.reshape(potential_actions.size)
     # As a default, choose the action closest to the center
-    action = PlayerAction(np.floor(np.median(potential_actions)))
+    # action = PlayerAction(np.floor(np.median(potential_actions)))
 
     # If the node is at the max depth, a terminal node, or is the root node
     # return the heursitic score of the node
@@ -59,10 +60,16 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
     if max_player:
         score = -np.inf
         for col in potential_actions:
+            # Add a shortcut for blocking wins
+            if (depth == 0 and connect_four(apply_player_action(board, col,
+                                            BoardPiece(player % 2 + 1), True),
+                                            BoardPiece(player % 2 + 1), col)):
+                return GameScore(200), PlayerAction(col)
+
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, player, False,
-                                            depth + 1)
-            new_score -= depth
+            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
+                                            False, depth + 1)
+            new_score -= 5*depth
             if new_score > score:
                 score = new_score
                 action = col
@@ -71,16 +78,13 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
         score = np.inf
         for col in potential_actions:
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, player, True,
-                                            depth + 1)
-            new_score += depth
+            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
+                                            True, depth + 1)
+            new_score += 5*depth
             if new_score < score:
                 score = new_score
                 action = col
         return GameScore(score), PlayerAction(action)
-
-# (*Initial call *)
-# minimax(origin, depth, TRUE)
 
 
 def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
@@ -94,8 +98,13 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
     # Initialize the score
     score = 0
     two_pts = 1
-    three_pts = 4
-    win_pts = 25
+    three_pts = 10
+    win_pts = 100
+    # # Set multiplier for min or max level
+    # if max_player:
+    #     multiplier = 1
+    # else:
+    #     multiplier = -1
 
     # Slide the mask across the board and check for a win in each position
     min_player = (player % 2 + 1)
@@ -106,6 +115,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             v_vec = board[row:row + mc, col]
             if np.all(v_vec == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(v_vec == player)) == 3 and
                   len(np.argwhere(v_vec == NO_PLAYER)) == 1):
                 score += three_pts
@@ -116,6 +126,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             h_vec = board[row, col:col + mc]
             if np.all(h_vec == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(h_vec == player)) == 3 and
                   len(np.argwhere(h_vec == NO_PLAYER)) == 1):
                 score += three_pts
@@ -127,6 +138,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             d_block = np.diag(block_mask)
             if np.all(d_block == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(d_block == player)) == 3 and
                   len(np.argwhere(d_block == NO_PLAYER)) == 1):
                 score += three_pts
@@ -137,6 +149,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             b_block = np.diag(block_mask[::-1, :])
             if np.all(b_block == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(b_block == player)) == 3 and
                   len(np.argwhere(b_block == NO_PLAYER)) == 1):
                 score += three_pts
@@ -147,6 +160,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Reduce score for min_player position
             if np.all(v_vec == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(v_vec == min_player)) == 3 and
                   len(np.argwhere(v_vec == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -156,6 +170,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Check for horizontal points
             if np.all(h_vec == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(h_vec == min_player)) == 3 and
                   len(np.argwhere(h_vec == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -165,6 +180,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Check for \ points
             if np.all(d_block == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(d_block == min_player)) == 3 and
                   len(np.argwhere(d_block == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -174,6 +190,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Check for / points
             if np.all(b_block == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(b_block == min_player)) == 3 and
                   len(np.argwhere(b_block == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -187,6 +204,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Accumulate score for max_player position
             if np.all(h_vec == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(h_vec == player)) == 3 and
                   len(np.argwhere(h_vec == NO_PLAYER)) == 1):
                 score += three_pts
@@ -196,6 +214,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Reduce score for min_player position
             if np.all(h_vec == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(h_vec == min_player)) == 3 and
                   len(np.argwhere(h_vec == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -209,6 +228,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Accumulate score for max_player position
             if np.all(v_vec == player):
                 score += win_pts
+                # return win_pts * multiplier
             elif (len(np.argwhere(v_vec == player)) == 3 and
                   len(np.argwhere(v_vec == NO_PLAYER)) == 1):
                 score += three_pts
@@ -218,6 +238,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Reduce score for min_player position
             if np.all(v_vec == min_player):
                 score -= win_pts
+                # return -win_pts * multiplier
             elif (len(np.argwhere(v_vec == min_player)) == 3 and
                   len(np.argwhere(v_vec == NO_PLAYER)) == 1):
                 score -= three_pts
@@ -229,6 +250,7 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
         return GameScore(score)
     else:
         return GameScore(-score)
+    # return score * multiplier
 
 
 # def heuristic_solver(board: Board, player: BoardPiece, max_player: bool = True):
