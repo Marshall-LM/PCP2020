@@ -23,7 +23,12 @@ def user_move(board: Board, _player: BoardPiece,
     while not (0 <= action < board.shape[1]):
         try:
             # Human player input action
-            action = PlayerAction(input("Select column to play (0-6): "))
+            action = input("Select column to play (0-6): ")
+            # If no input is entered, raise IndexError
+            if not action:
+                raise IndexError
+            # Cast as type PlayerAction
+            action = PlayerAction(action)
             # Test whether the column is full. If it is, top_row will throw
             # an IndexError
             top_row(board, action)

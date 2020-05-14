@@ -22,32 +22,24 @@ def generate_move_minimax(board: Board, player: BoardPiece,
         return PlayerAction(action), saved_state
 
     board_cp = board.copy()
-    score, action = minimax(board_cp, player, True, 0)
+    # Call minimax
+    # score, action = minimax(board_cp, player, True, 0)
+    # Call alpha_beta
+    alpha0 = -1000
+    beta0 = 1000
+    score, action = alpha_beta(board_cp, player, True, 0, alpha0, beta0)
 
     return PlayerAction(action), saved_state
 
 
 def minimax(board: Board, player: BoardPiece, max_player: bool,
             depth: int) -> Tuple[GameScore, Optional[PlayerAction]]:
-    # if depth = 0 or node is a terminal node then
-    # return the heuristic value of node
-    #
-    # if maximizingPlayer then
-    #     value := −∞
-    #     for each child of node do
-    #         value := max(value, minimax(child, depth − 1, FALSE))
-    #     return value
-    # else (*minimizing player *)
-    #     value := +∞
-    #     for each child of node do
-    #         value := min(value, minimax(child, depth − 1, TRUE))
-    #     return value
+    """
 
+    """
     # Make a list of columns that can be played in
     potential_actions = np.argwhere(board[-1, :] == 0)
     potential_actions = potential_actions.reshape(potential_actions.size)
-    # As a default, choose the action closest to the center
-    # action = PlayerAction(np.floor(np.median(potential_actions)))
 
     # If the node is at the max depth, a terminal node, or is the root node
     # return the heursitic score of the node
@@ -62,14 +54,16 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
         for col in potential_actions:
             # Add a shortcut for blocking wins
             if (depth == 0 and connect_four(apply_player_action(board, col,
-                                            BoardPiece(player % 2 + 1), True),
+                                                                BoardPiece(player % 2 + 1), True),
                                             BoardPiece(player % 2 + 1), col)):
                 return GameScore(200), PlayerAction(col)
 
+            # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
-                                            False, depth + 1)
-            new_score -= 5*depth
+            new_score, temp = minimax(new_board, BoardPiece(player % 2 + 1),
+                                      False, depth + 1)
+            new_score -= 5 * depth
+            # Check whether the score updates
             if new_score > score:
                 score = new_score
                 action = col
@@ -77,13 +71,81 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
     else:
         score = np.inf
         for col in potential_actions:
+            # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
-            new_score, new_action = minimax(new_board, BoardPiece(player % 2 + 1),
-                                            True, depth + 1)
-            new_score += 5*depth
+            new_score, temp = minimax(new_board, BoardPiece(player % 2 + 1),
+                                      True, depth + 1)
+            new_score += 5 * depth
+            # Check whether the score updates
             if new_score < score:
                 score = new_score
                 action = col
+        return GameScore(score), PlayerAction(action)
+
+
+def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
+               depth: int, alpha: GameScore, beta: GameScore
+               ) -> Tuple[GameScore, Optional[PlayerAction]]:
+    """
+
+    """
+    # Make a list of columns that can be played in
+    potential_actions = np.argwhere(board[-1, :] == 0)
+    potential_actions = potential_actions.reshape(potential_actions.size)
+
+    # If the node is at the max depth, a terminal node, or is the root node
+    # return the heursitic score of the node
+    max_depth = 4
+    # if depth == 0 or np.all(board != 0):
+    if depth == max_depth or np.all(board != 0):
+        return heuristic_solver(board, player, max_player), None
+
+    # For each potential action, call alpha_beta
+    if max_player:
+        score = -np.inf
+        for col in potential_actions:
+            # Add a shortcut for blocking wins
+            if (depth == 0 and connect_four(apply_player_action(board, col,
+                                            BoardPiece(player % 2 + 1), True),
+                                            BoardPiece(player % 2 + 1), col)):
+                return GameScore(200), PlayerAction(col)
+
+            # Apply the current action and call alpha_beta
+            new_board = apply_player_action(board, col, player, True)
+            new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
+                                         False, depth + 1, alpha, beta)
+            new_score -= 5 * depth
+            # Check whether the score updates
+            if new_score > score:
+                score = new_score
+                action = col
+            # Check whether we can prune the rest of the branch
+            if score >= beta:
+                # print('Pruned a branch')
+                break
+            # Check whether alpha updates the score
+            if score > alpha:
+                alpha = score
+        return GameScore(score), PlayerAction(action)
+    else:
+        score = np.inf
+        for col in potential_actions:
+            # Apply the current action and call alpha_beta
+            new_board = apply_player_action(board, col, player, True)
+            new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
+                                         True, depth + 1, alpha, beta)
+            new_score += 5 * depth
+            # Check whether the score updates
+            if new_score < score:
+                score = new_score
+                action = col
+            # Check whether we can prune the rest of the branch
+            if score <= alpha:
+                # print('Pruned a branch')
+                break
+            # Check whether alpha updates the score
+            if score < beta:
+                beta = score
         return GameScore(score), PlayerAction(action)
 
 
