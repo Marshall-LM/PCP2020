@@ -181,7 +181,7 @@ def apply_player_action(board: Board, action: PlayerAction,
     return board_copy
 
 
-def connect_four(board_map: Bitmap) -> bool:
+def connect_four(board_map: Bitmap, board_cols: int) -> bool:
     """
     Identify whether the current bitmap of the board results in a win
     for the whom it belongs to.
@@ -191,22 +191,28 @@ def connect_four(board_map: Bitmap) -> bool:
     :return: True if the player who just played has four adjacent pieces,
              False otherwise
     """
+    # Define the shift constants
+    h_shift = 1
+    v_shift = board_cols + 1
+    d_shift = board_cols
+    b_shift = board_cols + 2
 
     # Horizontal check
-    m = board_map & (board_map >> 1)
-    if m & (m >> 2):
+    m = board_map & (board_map >> h_shift)
+    if m & (m >> (2 * h_shift)):
+        print(m & (m >> (2 * h_shift)))
         return True
     # Diagonal \ check
-    m = board_map & (board_map >> 7)
-    if m & (m >> 14):
+    m = board_map & (board_map >> d_shift)
+    if m & (m >> (2 * d_shift)):
         return True
     # Diagonal / check
-    m = board_map & (board_map >> 9)
-    if m & (m >> 18):
+    m = board_map & (board_map >> b_shift)
+    if m & (m >> (2 * b_shift)):
         return True
     # Vertical check
-    m = board_map & (board_map >> 8)
-    if m & (m >> 16):
+    m = board_map & (board_map >> v_shift)
+    if m & (m >> (2 * v_shift)):
         return True
     # Nothing found
     return False
