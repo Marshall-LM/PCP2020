@@ -97,7 +97,7 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
 
     # If the node is at the max depth, a terminal node, or is the root node
     # return the heursitic score of the node
-    max_depth = 7
+    max_depth = 4
     # if depth == 0 or np.all(board != 0):
     if depth == max_depth or np.all(board != 0):
         return heuristic_solver(board, player, max_player), None
@@ -111,7 +111,7 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
             if (depth == 0 and connect_four(apply_player_action(board, col,
                                             BoardPiece(player % 2 + 1), True),
                                             BoardPiece(player % 2 + 1), col)):
-                return GameScore(10e3), PlayerAction(col)
+                return GameScore(100), PlayerAction(col)
 
             # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
