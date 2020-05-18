@@ -6,7 +6,7 @@ from agents.common import Board, BoardPiece, PlayerAction, SavedState,\
 GameScore = np.int
 
 
-def generate_move_minimax(board: Board, player: BoardPiece,
+def generate_move_alpha_beta(board: Board, player: BoardPiece,
                           saved_state: Optional[SavedState]
                           ) -> Tuple[PlayerAction, Optional[SavedState]]:
     """
@@ -21,14 +21,17 @@ def generate_move_minimax(board: Board, player: BoardPiece,
         return PlayerAction(action), saved_state
 
     board_cp = board.copy()
-    # Call minimax
-    score, action = minimax(board_cp, player, True, 0)
+    # Call alpha_beta
+    alpha0 = -100000
+    beta0 = 100000
+    score, action = alpha_beta(board_cp, player, True, 0, alpha0, beta0)
 
     return PlayerAction(action), saved_state
 
 
-def minimax(board: Board, player: BoardPiece, max_player: bool,
-            depth: int) -> Tuple[GameScore, Optional[PlayerAction]]:
+def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
+               depth: int, alpha: GameScore, beta: GameScore
+               ) -> Tuple[GameScore, Optional[PlayerAction]]:
     """
 
     """
@@ -36,46 +39,58 @@ def minimax(board: Board, player: BoardPiece, max_player: bool,
     potential_actions = np.argwhere(board[-1, :] == 0)
     potential_actions = potential_actions.reshape(potential_actions.size)
 
-    # If the node is at the max depth, a terminal node, or is the root node
-    # return the heursitic score of the node
+    # If the node is at the max depth, a terminal node calculate the score
     max_depth = 4
-    # if depth == 0 or np.all(board != 0):
     if depth == max_depth or np.all(board != 0):
         return heuristic_solver(board, player, max_player), None
         # return heuristic_solver_bits(board, player, max_player), None
 
-    # For each potential action, call minimax
+    # For each potential action, call alpha_beta
     if max_player:
         score = -np.inf
         for col in potential_actions:
             # Add a shortcut for blocking wins
             if (depth == 0 and connect_four(apply_player_action(board, col,
-                                                                BoardPiece(player % 2 + 1), True),
+                                            BoardPiece(player % 2 + 1), True),
                                             BoardPiece(player % 2 + 1), col)):
                 return GameScore(100), PlayerAction(col)
 
             # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
-            new_score, temp = minimax(new_board, BoardPiece(player % 2 + 1),
-                                      False, depth + 1)
+            new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
+                                         False, depth + 1, alpha, beta)
             new_score -= 5 * depth
             # Check whether the score updates
             if new_score > score:
                 score = new_score
                 action = col
+            # Check whether we can prune the rest of the branch
+            if score >= beta:
+                # print('Pruned a branch')
+                break
+            # Check whether alpha updates the score
+            if score > alpha:
+                alpha = score
         return GameScore(score), PlayerAction(action)
     else:
         score = np.inf
         for col in potential_actions:
             # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
-            new_score, temp = minimax(new_board, BoardPiece(player % 2 + 1),
-                                      True, depth + 1)
+            new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
+                                         True, depth + 1, alpha, beta)
             new_score += 5 * depth
             # Check whether the score updates
             if new_score < score:
                 score = new_score
                 action = col
+            # Check whether we can prune the rest of the branch
+            if score <= alpha:
+                # print('Pruned a branch')
+                break
+            # Check whether alpha updates the score
+            if score < beta:
+                beta = score
         return GameScore(score), PlayerAction(action)
 
 

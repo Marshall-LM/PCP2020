@@ -2,7 +2,8 @@ import numpy as np
 from typing import Optional, Callable
 from agents.common import top_row
 from agents.common import PlayerAction, Board, BoardPiece, SavedState, GenMove
-from agents.agent_minimax import generate_move
+# from agents.agent_minimax import generate_move
+from agents.agent_alpha_beta import generate_move
 
 
 def user_move(board: Board, _player: BoardPiece,
