@@ -12,7 +12,8 @@ def generate_move_alpha_beta(board: Board, player: BoardPiece,
                              saved_state: Optional[SavedState]
                              ) -> Tuple[PlayerAction, Optional[SavedState]]:
     """
-    Agent selects a move based on a minimax depth first search
+    Agent selects a move based on a minimax depth first search, with
+    alpha-beta pruning.
 
 
     """
@@ -24,7 +25,7 @@ def generate_move_alpha_beta(board: Board, player: BoardPiece,
 
     board_cp = board.copy()
     # Set the max depth to search
-    max_depth = 6
+    max_depth = 4
     # Call alpha_beta after initializing the alpha and beta values (+/- 'inf')
     a0 = -100000
     b0 = 100000
@@ -36,7 +37,6 @@ def generate_move_alpha_beta(board: Board, player: BoardPiece,
 
 def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
                depth: int, alpha: GameScore, beta: GameScore,
-               init: bool = False
                ) -> Tuple[GameScore, Optional[PlayerAction]]:
     """
 
@@ -46,31 +46,39 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
     potential_actions = potential_actions.reshape(potential_actions.size)
 
     # If the node is at the max depth or a terminal node calcaulte the score
-    if depth == 0 or np.all(board != 0):
-        # return heuristic_solver(board, player, max_player), None
-        return heuristic_solver_bits(board, player, max_player), None
+    max_depth = 4
+    if depth == max_depth or np.all(board != 0):
+        return heuristic_solver(board, player, max_player), None
+        # return heuristic_solver_bits(board, player, max_player), None
 
-    # If this is the root call, check for wins and block/win
-    if init:
+    # If this is the root call, check for wins and block/win, prioritize wins
+    win_score = 150
+    if depth == 0:
+        for col in potential_actions:
+            if connect_four(apply_player_action(board, col, player, True),
+                            player, col):
+                return GameScore(win_score), PlayerAction(col)
         for col in potential_actions:
             if connect_four(apply_player_action(board, col,
-                            BoardPiece(player % 2 + 1), True),
+                                                BoardPiece(player % 2 + 1), True),
                             BoardPiece(player % 2 + 1), col):
-                return GameScore(100), PlayerAction(col)
-            elif connect_four(apply_player_action(board, col, player, True),
-                              player, col):
-                return GameScore(100), PlayerAction(col)
+                return GameScore(win_score), PlayerAction(col)
 
     # For each potential action, call alpha_beta
     if max_player:
         score = -np.inf
         for col in potential_actions:
+            # Add a shortcut for scoring wins
+            # if connect_four(apply_player_action(board, col,
+            #                 BoardPiece(player % 2 + 1), True),
+            #                 BoardPiece(player % 2 + 1), col):
+            #     return GameScore(win_score - 5 * depth), PlayerAction(col)
+
             # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
             new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
-                                         False, depth - 1, alpha, beta)
-            # TODO: figure out how to fix this rule with depth counting backwards
-            new_score -= 5 * (6 - depth)
+                                         False, depth + 1, alpha, beta)
+            new_score -= 5 * depth
             # Check whether the score updates
             if new_score > score:
                 score = new_score
@@ -86,12 +94,17 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
     else:
         score = np.inf
         for col in potential_actions:
+            # Add a shortcut for scoring wins
+            # if connect_four(apply_player_action(board, col,
+            #                 BoardPiece(player % 2 + 1), True),
+            #                 BoardPiece(player % 2 + 1), col):
+            #     return GameScore(-win_score + 5 * depth), PlayerAction(col)
+
             # Apply the current action and call alpha_beta
             new_board = apply_player_action(board, col, player, True)
             new_score, temp = alpha_beta(new_board, BoardPiece(player % 2 + 1),
-                                         True, depth - 1, alpha, beta)
-            # TODO: figure out how to fix this rule with depth counting backwards
-            new_score += 5 * (6 - depth)
+                                         True, depth + 1, alpha, beta)
+            new_score += 5 * depth
             # Check whether the score updates
             if new_score < score:
                 score = new_score
@@ -106,97 +119,12 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
         return GameScore(score), PlayerAction(action)
 
 
-# TODO: The wrapper function seems to be significantly slower
-# def alpha_beta_root(board: Board, player: BoardPiece, max_player: bool,
-#                     depth: int, alpha: GameScore, beta: GameScore
-#                     ) -> Tuple[GameScore, Optional[PlayerAction]]:
-#     """
-#
-#     """
-#     # Make a list of columns that can be played in
-#     potential_actions = np.argwhere(board[-1, :] == 0)
-#     potential_actions = potential_actions.reshape(potential_actions.size)
-#
-#     # For each potential action, call alpha_beta
-#     if max_player:
-#         score = -np.inf
-#         for col in potential_actions:
-#             # Add a shortcut for blocking wins
-#             if connect_four(apply_player_action(
-#                             board, col, BoardPiece(player % 2 + 1), True),
-#                             BoardPiece(player % 2 + 1), col):
-#                 return GameScore(100), PlayerAction(col)
-#
-#             # Apply the current action and call alpha_beta
-#             new_board = apply_player_action(board, col, player, True)
-#             new_score = alpha_beta(new_board, BoardPiece(player % 2 + 1),
-#                                    False, depth - 1, alpha, beta)
-#             # Check whether the score updates
-#             if new_score > score:
-#                 score = new_score
-#                 action = col
-#         return GameScore(score), PlayerAction(action)
-
-
-# def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
-#                depth: int, alpha: GameScore, beta: GameScore
-#                ) -> GameScore:
-#     """
-#
-#     """
-#     # Make a list of columns that can be played in
-#     potential_actions = np.argwhere(board[-1, :] == 0)
-#     potential_actions = potential_actions.reshape(potential_actions.size)
-#
-#     # If the node is at the max depth or a terminal node calcaulte the score
-#     if depth == 0 or np.all(board != 0):
-#         return heuristic_solver(board, player, max_player)
-#         # return heuristic_solver_bits(board, player, max_player), None
-#
-#     # For each potential action, call alpha_beta
-#     if max_player:
-#         score = -np.inf
-#         for col in potential_actions:
-#             # Apply the current action and call alpha_beta
-#             new_board = apply_player_action(board, col, player, True)
-#             new_score = alpha_beta(new_board, BoardPiece(player % 2 + 1),
-#                                    False, depth - 1, alpha, beta)
-#             # TODO: figure out how to fix this rule with depth counting backwards
-#             new_score -= 5 * (4 - depth)
-#             # Check whether the score updates
-#             if new_score > score:
-#                 score = new_score
-#             # Check whether we can prune the rest of the branch
-#             if score >= beta:
-#                 break
-#             # Check whether alpha updates the score
-#             if score > alpha:
-#                 alpha = score
-#         return GameScore(score)
-#     else:
-#         score = np.inf
-#         for col in potential_actions:
-#             # Apply the current action and call alpha_beta
-#             new_board = apply_player_action(board, col, player, True)
-#             new_score = alpha_beta(new_board, BoardPiece(player % 2 + 1),
-#                                    True, depth - 1, alpha, beta)
-#             # TODO: figure out how to fix this rule with depth counting backwards
-#             new_score += 5 * (4 - depth)
-#             # Check whether the score updates
-#             if new_score < score:
-#                 score = new_score
-#             # Check whether we can prune the rest of the branch
-#             if score <= alpha:
-#                 break
-#             # Check whether alpha updates the score
-#             if score < beta:
-#                 beta = score
-#         return GameScore(score)
-
-
 def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
     """
-
+    Scores the game board based on whether a player has combinations of two,
+    three, or four pieces in any four spaces, with the other spaces being
+    unoccupied. Points increase by an order of magnitude for each piece, to
+    prioritize being closer to winning.
     """
     # Shape of board
     n_rows, n_cols = board.shape
@@ -217,79 +145,79 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             v_vec = board[row:row + mc, col]
             if np.all(v_vec == player):
                 score += win_pts
-            elif (len(np.argwhere(v_vec == player)) == 3 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(v_vec == player)[0]) == 3 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(v_vec == player)) == 2 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(v_vec == player)[0]) == 2 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 2):
                 score += two_pts
             # Check for horizontal points
             h_vec = board[row, col:col + mc]
             if np.all(h_vec == player):
                 score += win_pts
-            elif (len(np.argwhere(h_vec == player)) == 3 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(h_vec == player)[0]) == 3 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(h_vec == player)) == 2 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(h_vec == player)[0]) == 2 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 2):
                 score += two_pts
             # Check for \ points
             block_mask = board[row:row + mc, col:col + mc]
             d_block = np.diag(block_mask)
             if np.all(d_block == player):
                 score += win_pts
-            elif (len(np.argwhere(d_block == player)) == 3 and
-                  len(np.argwhere(d_block == NO_PLAYER)) == 1):
+            elif (len(np.where(d_block == player)[0]) == 3 and
+                  len(np.where(d_block == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(d_block == player)) == 2 and
-                  len(np.argwhere(d_block == NO_PLAYER)) == 2):
+            elif (len(np.where(d_block == player)[0]) == 2 and
+                  len(np.where(d_block == NO_PLAYER)[0]) == 2):
                 score += two_pts
             # Check for / points
             b_block = np.diag(block_mask[::-1, :])
             if np.all(b_block == player):
                 score += win_pts
-            elif (len(np.argwhere(b_block == player)) == 3 and
-                  len(np.argwhere(b_block == NO_PLAYER)) == 1):
+            elif (len(np.where(b_block == player)[0]) == 3 and
+                  len(np.where(b_block == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(b_block == player)) == 2 and
-                  len(np.argwhere(b_block == NO_PLAYER)) == 2):
+            elif (len(np.where(b_block == player)[0]) == 2 and
+                  len(np.where(b_block == NO_PLAYER)[0]) == 2):
                 score += two_pts
 
             # Reduce score for min_player position
             if np.all(v_vec == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(v_vec == min_player)) == 3 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(v_vec == min_player)[0]) == 3 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(v_vec == min_player)) == 2 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(v_vec == min_player)[0]) == 2 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 2):
                 score -= two_pts
             # Check for horizontal points
             if np.all(h_vec == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(h_vec == min_player)) == 3 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(h_vec == min_player)[0]) == 3 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(h_vec == min_player)) == 2 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(h_vec == min_player)[0]) == 2 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 2):
                 score -= two_pts
             # Check for \ points
             if np.all(d_block == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(d_block == min_player)) == 3 and
-                  len(np.argwhere(d_block == NO_PLAYER)) == 1):
+            elif (len(np.where(d_block == min_player)[0]) == 3 and
+                  len(np.where(d_block == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(d_block == min_player)) == 2 and
-                  len(np.argwhere(d_block == NO_PLAYER)) == 2):
+            elif (len(np.where(d_block == min_player)[0]) == 2 and
+                  len(np.where(d_block == NO_PLAYER)[0]) == 2):
                 score -= two_pts
             # Check for / points
             if np.all(b_block == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(b_block == min_player)) == 3 and
-                  len(np.argwhere(b_block == NO_PLAYER)) == 1):
+            elif (len(np.where(b_block == min_player)[0]) == 3 and
+                  len(np.where(b_block == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(b_block == min_player)) == 2 and
-                  len(np.argwhere(b_block == NO_PLAYER)) == 2):
+            elif (len(np.where(b_block == min_player)[0]) == 2 and
+                  len(np.where(b_block == NO_PLAYER)[0]) == 2):
                 score -= two_pts
 
     for row in range(n_rows - mc + 1, n_rows):
@@ -298,20 +226,20 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Accumulate score for max_player position
             if np.all(h_vec == player):
                 score += win_pts
-            elif (len(np.argwhere(h_vec == player)) == 3 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(h_vec == player)[0]) == 3 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(h_vec == player)) == 2 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(h_vec == player)[0]) == 2 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 2):
                 score += two_pts
             # Reduce score for min_player position
             if np.all(h_vec == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(h_vec == min_player)) == 3 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(h_vec == min_player)[0]) == 3 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(h_vec == min_player)) == 2 and
-                  len(np.argwhere(h_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(h_vec == min_player)[0]) == 2 and
+                  len(np.where(h_vec == NO_PLAYER)[0]) == 2):
                 score -= two_pts
 
     for row in range(n_rows - mc + 1):
@@ -320,20 +248,20 @@ def heuristic_solver(board: Board, player: BoardPiece, max_player: bool):
             # Accumulate score for max_player position
             if np.all(v_vec == player):
                 score += win_pts
-            elif (len(np.argwhere(v_vec == player)) == 3 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(v_vec == player)[0]) == 3 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 1):
                 score += three_pts
-            elif (len(np.argwhere(v_vec == player)) == 2 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(v_vec == player)[0]) == 2 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 2):
                 score += two_pts
             # Reduce score for min_player position
             if np.all(v_vec == min_player):
                 score -= win_pts
-            elif (len(np.argwhere(v_vec == min_player)) == 3 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 1):
+            elif (len(np.where(v_vec == min_player)[0]) == 3 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 1):
                 score -= three_pts
-            elif (len(np.argwhere(v_vec == min_player)) == 2 and
-                  len(np.argwhere(v_vec == NO_PLAYER)) == 2):
+            elif (len(np.where(v_vec == min_player)[0]) == 2 and
+                  len(np.where(v_vec == NO_PLAYER)[0]) == 2):
                 score -= two_pts
 
     if max_player:
@@ -346,21 +274,21 @@ def heuristic_solver_bits(board: Board, player: BoardPiece, max_player: bool = T
     # Convert the boards to bitmaps and define the min_player board
     max_board, mask_board = board_to_bitmap(board, player)
     min_board = max_board ^ mask_board
-    not_max = ~max_board
-    not_min = ~min_board
+    empty_board = ~mask_board
 
     # Initialize the score and point values
     score = 0
     # Define the shift constants
     b_cols = board.shape[1]
+    # Shift order: horizontal, vertical, \, /
     shift_list = [1, b_cols + 1, b_cols, b_cols + 2]
 
     # Accumulate score for max_player position
     for shift in shift_list:
-        score += bit_solver(shift, max_board, not_min)
+        score += bit_solver(shift, max_board, empty_board)
     # Reduce score for min_player position
     for shift in shift_list:
-        score -= bit_solver(shift, min_board, not_max)
+        score -= bit_solver(shift, min_board, empty_board)
 
     if max_player:
         return GameScore(score)
@@ -368,11 +296,11 @@ def heuristic_solver_bits(board: Board, player: BoardPiece, max_player: bool = T
         return GameScore(-score)
 
 
-def bit_solver(shift: int, board: Bitmap, not_board: Bitmap):
+def bit_solver(shift: int, player: Bitmap, not_player: Bitmap):
     """
 
     """
-    # from gmpy2 import popcount, mpz
+    from gmpy2 import popcount, mpz
 
     # Initialize the score and point values
     score = 0
@@ -380,76 +308,49 @@ def bit_solver(shift: int, board: Bitmap, not_board: Bitmap):
     pt3 = 10
     win_pts = 100
 
-    s1_right = (board >> shift)
-    s1_left = (board << shift)
-    s1_right_n1 = s1_right & board
-    s1_left_n1 = s1_left & board
-    s2_left = board >> (2 * shift)
-    s3_left = board >> (3 * shift)
-    s2_right = board >> (2 * shift)
+    s1_right = (player >> shift)
+    s2_right = player >> (2 * shift)
+    s3_right = player >> (3 * shift)
+    s1_left = (player << shift)
+    s2_left = player << (2 * shift)
+    s3_left = player << (3 * shift)
+    s1_right_n1 = s1_right & player
+    s1_left_n1 = s1_left & player
 
-    # TODO: Check the logic on this. It's not calculating properly.
+    # TODO: Is there a faster way to count bits?
     # Check for wins
-    score += win_pts * (bin(s1_left_n1 & (s1_left_n1 >> (2 * shift))).count("1"))
+    score += win_pts * popcount(mpz(s1_left_n1 & (s1_left_n1 >> (2 * shift))))
     # Check for 3 in 4
-    # XX-X
-    score += pt3 * (bin(((s1_left_n1 << shift) & not_board)
-                        & ((s1_left_n1 << (2 * shift)) & board)).count("1"))
     # XXX-
-    score += pt3 * (bin((((s1_left_n1 << shift) & board) << shift)
-                        & not_board).count("1"))
-    # X-XX
-    score += pt3 * (bin(((s1_right_n1 >> shift) & not_board)
-                        & ((s1_right_n1 >> (2 * shift)) & board)).count("1"))
+    score += pt3 * popcount(mpz(((s1_left_n1 & s2_left) << shift)
+                                & not_player))
     # -XXX
-    score += pt3 * (bin((((s1_right_n1 >> shift) & board) >> shift)
-                        & not_board).count("1"))
+    score += pt3 * popcount(mpz(((s1_right_n1 & s2_right) >> shift)
+                                & not_player))
+    # XX-X
+    score += pt3 * popcount(mpz((s1_right_n1 & s3_right) << (2 * shift)
+                                & not_player))
+    # X-XX
+    score += pt3 * popcount(mpz((s1_left_n1 & s3_left) >> (2 * shift)
+                                & not_player))
     # Check for 2 in 4
     # XX--
-    score += pt2 * (bin(((s1_left_n1 << shift) & not_board)
-                        & ((s1_left_n1 << (2 * shift)) & not_board)).count("1"))
-    # X-X-
-    score += pt2 * (bin(((s2_left & board) << shift) & not_board).count("1"))
+    score += pt2 * popcount(mpz(s1_left_n1 << shift
+                                & (not_player & (not_player >> shift))))
     # --XX
-    score += pt2 * (bin(((s1_right_n1 >> shift) & not_board)
-                        & ((s1_right_n1 >> (2 * shift)) & not_board)).count("1"))
+    score += pt2 * popcount(mpz(s1_right_n1 >> shift
+                                & (not_player & (not_player << shift))))
+    # X-X-
+    score += pt2 * popcount(mpz((player & s2_left) << shift
+                                & (not_player & (not_player << (2 * shift)))))
     # -X-X
-    score += pt2 * (bin(((s2_right & board) >> shift) & not_board).count("1"))
+    score += pt2 * popcount(mpz((player & s2_right) >> shift
+                                & (not_player & (not_player >> (2 * shift)))))
     # X--X
-    score += pt2 * (bin((s1_left & not_board) & (s2_left & not_board)
-                        & (s3_left & not_board)).count("1"))
-    # # Check for wins
-    # score += win_pts * popcount(mpz(s1_left_n1 & (s1_left_n1 >> (2 * shift))))
-    # # Check for 3 in 4
-    # # XX-X
-    # score += pt3 * popcount(mpz(((s1_left_n1 << shift) & not_board)
-    #                             & ((s1_left_n1 << (2 * shift)) & board)))
-    # # XXX-
-    # score += pt3 * popcount(mpz((((s1_left_n1 << shift) & board) << shift)
-    #                             & not_board))
-    # # X-XX
-    # score += pt3 * popcount(mpz(((s1_right_n1 >> shift) & not_board)
-    #                             & ((s1_right_n1 >> (2 * shift)) & board)))
-    # # -XXX
-    # score += pt3 * popcount(mpz((((s1_right_n1 >> shift) & board) >> shift)
-    #                             & not_board))
-    # # Check for 2 in 4
-    # # XX--
-    # score += pt2 * popcount(mpz(((s1_left_n1 << shift) & not_board)
-    #                             & ((s1_left_n1 << (2 * shift)) & not_board)))
-    # # X-X-
-    # score += pt2 * popcount(mpz(((s2_left & board) << shift) & not_board))
-    # # --XX
-    # score += pt2 * popcount(mpz(((s1_right_n1 >> shift) & not_board)
-    #                             & ((s1_right_n1 >> (2 * shift)) & not_board)))
-    # # -X-X
-    # score += pt2 * popcount(mpz(((s2_right & board) >> shift) & not_board))
-    # # X--X
-    # score += pt2 * popcount(mpz((s1_left & not_board) & (s2_left & not_board)
-    #                             & (s3_left & not_board)))
+    score += pt2 * popcount(mpz((player & s3_right) << shift
+                                & (not_player & (not_player >> shift))))
+    # -XX-
+    score += pt2 * popcount(mpz(s1_right_n1 >> shift
+                                & (not_player & (not_player >> (3 * shift)))))
 
     return score
-
-# TODO: Test bitmap calculations and tweak so that it's calculating the proper values.
-#  It seems like the shortcut to block wins is not activating for some reason.
-#  The scores being calculated are way too large.

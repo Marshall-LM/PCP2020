@@ -328,15 +328,24 @@ def test_board_to_bitmap():
     test_board[3, 3] = cm.PLAYER2
     test_board[4, 3] = cm.PLAYER1
 
+    # test_board[0, 2:4] = cm.PLAYER1
+    # test_board[0, 5] = cm.PLAYER1
+    board_str = cm.pretty_print_board(test_board)
+    print('')
+    print(board_str)
+
     mask_pos = int('000000000000100000001100000011000001110000111100', 2)
-    # p1_pos =   int('000000000000100000000000000001000000110000100100', 2)
+    p1_pos =   int('000000000000100000000000000001000000110000100100', 2)
     p2_pos =   int('000000000000000000001100000010000001000000011000', 2)
 
     print('')
-    print(bin(p2_pos))
+    # print(bin(p1_pos))
+    print(bin(cm.board_to_bitmap(test_board, cm.PLAYER1)[0]))
+    # print(bin(p2_pos))
     print(bin(cm.board_to_bitmap(test_board, cm.PLAYER2)[0]))
-    print(bin(mask_pos))
+    # print(bin(mask_pos))
     print(bin(cm.board_to_bitmap(test_board, cm.PLAYER2)[1]))
+    # print(bin(cm.board_to_bitmap(test_board, cm.PLAYER1)[1]))
 
     assert cm.board_to_bitmap(test_board, cm.PLAYER2)[0] == p2_pos
     assert cm.board_to_bitmap(test_board, cm.PLAYER2)[1] == mask_pos

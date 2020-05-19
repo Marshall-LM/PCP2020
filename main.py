@@ -59,6 +59,8 @@ def human_vs_agent(generate_move_1: GenMove,
 
     # Play two games, where each player gets a chance to go first
     for play_first in (1, -1):
+        # Initialize a string to store actions
+        game_moves = ''
         # This loop initializes the variables to speed up computation when
         # using the numba compiler
         for init, player in zip((init_1, init_2)[::play_first], players):
@@ -90,6 +92,9 @@ def human_vs_agent(generate_move_1: GenMove,
 
                 print(f"Move time: {time.time() - t0:.3f}s")
 
+                # Save the move
+                game_moves += str(action)
+                game_moves += ', '
                 # Update the board with the action
                 apply_player_action(board, action, player)
                 end_state = check_end_state(board, player)
@@ -100,9 +105,11 @@ def human_vs_agent(generate_move_1: GenMove,
 
                     if end_state == GameState.IS_DRAW:
                         print("Game ended in draw")
+                        print(game_moves)
                     else:
                         print(f'{player_name} won playing '
                               f'{"X" if player == PLAYER1 else "O"}')
+                        print(game_moves)
 
                     playing = False
                     break

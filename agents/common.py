@@ -188,8 +188,6 @@ def connect_four(board: Board, player: BoardPiece,
 
     # Shape of board
     n_rows, n_cols = board.shape
-    # n_rows = board.shape[0]
-    # n_cols = board.shape[1]
     # Min connection (4 in a row wins)
     mc = 4
 
@@ -206,29 +204,13 @@ def connect_four(board: Board, player: BoardPiece,
     for row in range(n_rows - mc + 1):
         for col in range(col_lower, col_upper - mc + 1):
             # Check for vertical wins
-            # if (row + mc) <= n_rows:
-            #     v_vec = board[row:row + mc, col]
-            #     if np.all(v_vec == player):
-            #         return True
             v_vec = board[row:row + mc, col]
             if np.all(v_vec == player):
                 return True
             # Check for horizontal wins
-            # if (col + mc) <= n_cols:
-            #     h_vec = board[row, col:col + mc]
-            #     if np.all(h_vec == player):
-            #         return True
             h_vec = board[row, col:col + mc]
             if np.all(h_vec == player):
                 return True
-            # if ((col + mc) <= n_cols) and ((row + mc) <= n_rows):
-            #     # Check for \ wins
-            #     block = board[row:row + mc, col:col + mc]
-            #     if np.all(np.diag(block) == player):
-            #         return True
-            #     # Check for / wins
-            #     if np.all(np.diag(block[::-1, :]) == player):
-            #         return True
             # Check for \ wins
             block = board[row:row + mc, col:col + mc]
             if np.all(np.diag(block) == player):
@@ -302,7 +284,3 @@ def switch_player(player: BoardPiece):
     :return: the inactive player
     """
     return BoardPiece(player % 2 + 1)
-
-# TODO: Check whether bitmap implementation actually improves computation
-#  speed for the overall program, or whether converting back and forth
-#  between a bitmap and array ends up slowing it down too much.
