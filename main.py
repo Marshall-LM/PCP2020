@@ -4,6 +4,7 @@ from agents.common import top_row
 from agents.common import PlayerAction, Board, BoardPiece, SavedState, GenMove
 # from agents.agent_minimax import generate_move
 from agents.agent_alpha_beta import generate_move
+import cProfile
 
 
 def user_move(board: Board, _player: BoardPiece,
@@ -114,6 +115,8 @@ def human_vs_agent(generate_move_1: GenMove,
                     playing = False
                     break
 
+
+# cProfile.run("human_vs_agent(generate_move, generate_move)", "tests/mmab")
 
 if __name__ == "__main__":
     # human_vs_agent(user_move)

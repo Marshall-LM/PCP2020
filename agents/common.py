@@ -1,6 +1,7 @@
 import numpy as np
 from enum import Enum
 from typing import Optional, Callable, Tuple
+from numba import njit
 
 
 # Initialize data types
@@ -172,6 +173,7 @@ def apply_player_action(board: Board, action: PlayerAction,
     return board_copy
 
 
+@njit
 def connect_four(board: Board, player: BoardPiece,
                  last_action: Optional[PlayerAction] = None) -> bool:
     """

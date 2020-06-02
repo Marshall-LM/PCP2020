@@ -3,12 +3,13 @@ from numba import njit
 from timeit import timeit
 from agents.common import initialize_game_state, switch_player, \
     apply_player_action, PLAYER1
-from agents.agent_alpha_beta.agent_alpha_beta import heuristic_solver, \
+# from agents.agent_alpha_beta.agent_alpha_beta import heuristic_solver, \
+#     heuristic_solver_bits
+from agents.agent_alpha_beta.alpha_beta_experiment import heuristic_solver, \
     heuristic_solver_bits
 from main import human_vs_agent
 from agents.agent_alpha_beta import generate_move
 import cProfile
-import profile
 
 
 # Can disable njit
@@ -54,5 +55,4 @@ def test_profile():
     # cProfile.runctx("human_vs_agent(generate_move, generate_move)", None, None, filename='mmab')
     cProfile.run("human_vs_agent(generate_move, generate_move)", "mmab")
     # profile.run('human_vs_agent(generate_move, generate_move)', filename='mmab')
-
 
