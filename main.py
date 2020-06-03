@@ -116,8 +116,8 @@ def human_vs_agent(generate_move_1: GenMove,
                     break
 
 
-# cProfile.run("human_vs_agent(generate_move, generate_move)", "tests/mmab")
+cProfile.run("human_vs_agent(generate_move, generate_move)", "tests/mmab_all_bits")
 
-if __name__ == "__main__":
-    # human_vs_agent(user_move)
-    human_vs_agent(generate_move)
+# if __name__ == "__main__":
+#     # human_vs_agent(user_move)
+#     human_vs_agent(generate_move)

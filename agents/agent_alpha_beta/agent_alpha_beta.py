@@ -82,23 +82,23 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
         else:
             return GameScore(win_score), None
     elif depth == max_depth:
-        return heuristic_solver(board, player, max_player), None
-        # return heuristic_solver_bits(board, player, max_player), None
+        # return heuristic_solver(board, player, max_player), None
+        return heuristic_solver_bits(board, player, max_player), None
     elif state_p == GameState.IS_DRAW:
         return 0, None
 
-    # If this is the root call, check for wins and block/win, prioritize wins
-    win_score = 150
-    if depth == 0:
-        for col in potential_actions:
-            if connect_four(apply_player_action(board, col, player, True),
-                            player, col):
-                return GameScore(win_score), PlayerAction(col)
-        for col in potential_actions:
-            if connect_four(apply_player_action(board, col,
-                            BoardPiece(player % 2 + 1), True),
-                            BoardPiece(player % 2 + 1), col):
-                return GameScore(win_score), PlayerAction(col)
+    # # If this is the root call, check for wins and block/win, prioritize wins
+    # win_score = 150
+    # if depth == 0:
+    #     for col in potential_actions:
+    #         if connect_four(apply_player_action(board, col, player, True),
+    #                         player, col):
+    #             return GameScore(win_score), PlayerAction(col)
+    #     for col in potential_actions:
+    #         if connect_four(apply_player_action(board, col,
+    #                         BoardPiece(player % 2 + 1), True),
+    #                         BoardPiece(player % 2 + 1), col):
+    #             return GameScore(win_score), PlayerAction(col)
 
     # For each potential action, call alpha_beta
     if max_player:
@@ -354,7 +354,7 @@ def bit_solver(shift: int, player: Bitmap, not_player: Bitmap):
     score = 0
     pt2 = 1
     pt3 = 10
-    win_pts = 100
+    # win_pts = 100
 
     s1_right = (player >> shift)
     s2_right = player >> (2 * shift)
@@ -366,7 +366,7 @@ def bit_solver(shift: int, player: Bitmap, not_player: Bitmap):
     s1_left_n1 = s1_left & player
 
     # Check for wins
-    score += win_pts * popcount(s1_left_n1 & (s1_left_n1 >> (2 * shift)))
+    # score += win_pts * popcount(s1_left_n1 & (s1_left_n1 >> (2 * shift)))
     # Check for 3 in 4
     # XXX-
     score += pt3 * popcount(((s1_left_n1 & s2_left) << shift)

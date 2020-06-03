@@ -1,8 +1,11 @@
 import numpy as np
-import agents.common as cm
+# import agents.common as cm
+import agents.common_bits as cm
+from gmpy2 import mpz
 # import agents.agent_minimax.agent_minimax as agm
 # import agents.agent_alpha_beta.agent_alpha_beta as agm
-import agents.agent_alpha_beta.alpha_beta_experiment as agm
+# import agents.agent_alpha_beta.alpha_beta_experiment as agm
+import agents.agent_alpha_beta.agent_alpha_beta_bits as agm
 # import agents.agent_alpha_beta.agent_alpha_beta_22 as agm
 
 
@@ -130,7 +133,7 @@ def test_heuristic_solver():
     # test_board[0, 2:5] = cm.PLAYER1
     test_board[0, 2:4] = cm.PLAYER1
     test_board[0, 1] = cm.PLAYER2
-    test_board[0, 4] = cm.PLAYER2
+    # test_board[0, 4] = cm.PLAYER2
     test_board[0, 5] = cm.PLAYER1
     # test_board[0, 5] = cm.PLAYER1
     # test_board[0, 2] = cm.PLAYER1
@@ -138,7 +141,9 @@ def test_heuristic_solver():
     print('')
     print(board_str)
     test_board_cp = test_board.copy()
-    print(agm.heuristic_solver_bits(test_board, cm.PLAYER1, True))
+    board_map, board_mask = cm.board_to_bitmap(test_board_cp, cm.PLAYER1)
+    print(agm.heuristic_solver_bits(board_map, board_mask,
+                                    test_board_cp.shape[0], True))
     # print(agm.heuristic_solver(test_board, cm.PLAYER1, True))
     # # print(agm.alpha_beta(test_board_cp, cm.PLAYER1, True, max_depth,
     # #                      -1000, 1000, True)[1])

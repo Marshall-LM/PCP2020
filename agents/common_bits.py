@@ -1,12 +1,13 @@
 import numpy as np
 from enum import Enum
 from typing import Optional, Callable, Tuple
+from gmpy2 import mpz, popcount
 
 
 # Initialize data types
 Board = np.ndarray
 BoardPiece = np.int8
-PlayerAction = np.int8  # The column to be played
+PlayerAction = np.int
 Bitmap = np.int
 
 # Initialize constant variables
@@ -143,64 +144,80 @@ def string_to_board(pp_board: str) -> Board:
     return board_arr
 
 
-def apply_player_action(board: Board, action: PlayerAction,
-                        player: BoardPiece, copy_: bool = False) -> Board:
+def apply_player_action(board: Board, col: PlayerAction, player: BoardPiece):
     """
-    Sets board[i, action] = player, where i is the lowest open row. The
-    modified board is returned. If copy is True, makes a copy of the board
-    before modifying it. If the player's move is invalid column, throw an
-    error.
+    This function is used only in the main function. Applies the action by
+    modifying board in place. Sets board[i, action] = player, where i is the
+    lowest open row.
 
     :param board: 2d array representing current state of the game
-    :param action: the column the current player played their piece in
+    :param col: the column the current player played their piece in
     :param player: the player making the current move (active player)
-    :param copy_: boolean indicating whether to copy board before modifying
-                  if copy_ is false, modify board in place
 
-    :return: returns a 2d array representing the updated board game state,
-             if the player makes an invalid selection, raises an IndexError
+    :return: None
     """
 
-    # Determine whether the move is valid
+    # Modify board in place by applying player action
+    board[top_row(board, col), col] = player
 
 
-    # TODO: If the copy_ boolean is set, create a copy of the board
-    #  It's useful in the context of minimax
-    if copy_:
-        board_copy = board.copy()
+def apply_player_action_ab(board: Bitmap, mask: Bitmap, col: PlayerAction,
+                           board_rows: int) -> [Bitmap, Bitmap]:
+    """
+    This function is used only within the alpha-beta search. Copies the board,
+    and sets board[i, action] = player, where i is the lowest open row. The
+    modified board and mask are returned.
 
-    # Play in the chosen column. If the column is full, raise an IndexError.
+    :param board: bitmap representing positions of current player
+    :param mask: bitmap representing positions of both players
+    :param col: the column the current player played their piece in
+    :param board_rows: the number of rows in the game board
 
-    try:
-        board_copy[top_row(board_copy, action), action] = player
-    # except IndexError:
-    #     raise IndexError('This column is full. Please choose again')
-    except:
-        print('This column is full. Please choose again')
+    :return: returns two bitmaps
+        next_player = bitmap representing positions of next player to play
+        new_mask = bitmap representing updated positions of both players
+    """
 
-    return board_copy
+    # If the column is full, raise an Exception
+    top_mask = mpz(bin((1 << (board_rows - 1)) << (col * (board_rows + 1))))
+    if (mask & top_mask) != 0:
+        raise IndexError
+    # top_mask = (1 << (board_rows - 1)) << (col * (board_rows + 1))
+    # if (int(mask) & top_mask) != 0:
+    #     raise IndexError
+    # Define a new mask by applying the action
+    new_mask = mask | (mask + (1 << (col * (board_rows + 1))))
+    # Set the bit mask for the next player
+    next_player = board ^ mask
+
+    return next_player, new_mask
 
 
-def connect_four(board_map: Bitmap, board_cols: int) -> bool:
+def connect_four(board_map: Bitmap, board_rows: int) -> bool:
     """
     Identify whether the current bitmap of the board results in a win
     for the whom it belongs to.
 
-    :param board_map: bitmap representing the state of a player's pieces
+    :param board_map: bitmap representing positions of current player
+    :param board_rows: the number of rows in the game board
 
-    :return: True if the player who just played has four adjacent pieces,
+    :return: True if the current player has four adjacent pieces,
              False otherwise
     """
-    # Define the shift constants
-    h_shift = 1
-    v_shift = board_cols + 1
-    d_shift = board_cols
-    b_shift = board_cols + 2
 
+    # Define the shift constants
+    v_shift = 1
+    h_shift = board_rows + 1
+    d_shift = board_rows + 2
+    b_shift = board_rows
+
+    # Vertical check
+    m = board_map & (board_map >> v_shift)
+    if m & (m >> (2 * v_shift)):
+        return True
     # Horizontal check
     m = board_map & (board_map >> h_shift)
     if m & (m >> (2 * h_shift)):
-        print(m & (m >> (2 * h_shift)))
         return True
     # Diagonal \ check
     m = board_map & (board_map >> d_shift)
@@ -209,10 +226,6 @@ def connect_four(board_map: Bitmap, board_cols: int) -> bool:
     # Diagonal / check
     m = board_map & (board_map >> b_shift)
     if m & (m >> (2 * b_shift)):
-        return True
-    # Vertical check
-    m = board_map & (board_map >> v_shift)
-    if m & (m >> (2 * v_shift)):
         return True
     # Nothing found
     return False
@@ -235,37 +248,41 @@ def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
     bd_shp = board.shape
 
     # Start with top row
-    for row in range(bd_shp[0] - 1, -1, -1):
+    for col in range(bd_shp[1] - 1, -1, -1):
         # Add 0-bits to sentinel column to avoid rollover errors
         mask += '0'
         position += '0'
 
         # Start with right column
-        for col in range(bd_shp[1] - 1, -1, -1):
+        for row in range(bd_shp[0] - 1, -1, -1):
             # if board[row, col] != 0:
             #     print('board[%i, %i] = %i' % (row, col, board[row, col]))
             mask += ('1' if board[row, col] != NO_PLAYER else '0')
             position += ('1' if board[row, col] == player else '0')
 
-    return Bitmap(position, 2), Bitmap(mask, 2)
+    # return Bitmap(position, 2), Bitmap(mask, 2)
+    return mpz(position, base=2), mpz(mask, base=2)
 
 
-def check_end_state(board: Bitmap) -> GameState:
+def check_end_state(board: Bitmap, mask: Bitmap, board_shp: Tuple
+                    ) -> GameState:
     """
     Returns the current game state for the active player, i.e. has their last
     action won (GameState.IS_WIN) or drawn (GameState.IS_DRAW) the game,
     or is play still on-going (GameState.STILL_PLAYING)?
 
-    :param board: 2d array representing current state of the game
+    :param board: bitmap representing positions of current player
+    :param mask: bitmap representing positions of both players
+    :param board_shp: the shape of the game board
 
     :return: GameState class constant indicating new state of game
     """
 
     # If connect_four returns True, the active player won
-    if connect_four(board):
+    if connect_four(board, board_shp[0]):
         return GameState.IS_WIN
     # If the game is not won, and there are no empty spots, the game is a draw
-    elif (empty_bit_mask and board) > 0:
+    elif popcount(mask) == board_shp[0] * board_shp[1]:
         return GameState.IS_DRAW
     # If the game is neither won, nor drawn, continue playing
     else:
@@ -289,8 +306,3 @@ def top_row(board: Board, col: PlayerAction):
         raise IndexError('This column is full')
     else:
         return min(np.argwhere(play_col == 0)[0])
-
-
-# TODO: Check whether bitmap implementation actually improves computation
-#  speed for the overall program, or whether converting back and forth
-#  between a bitmap and array ends up slowing it down too much.

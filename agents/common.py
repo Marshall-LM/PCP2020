@@ -148,8 +148,7 @@ def apply_player_action(board: Board, action: PlayerAction,
     """
     Sets board[i, action] = player, where i is the lowest open row. The
     modified board is returned. If copy is True, makes a copy of the board
-    before modifying it. If the player's move is invalid column, throw an
-    error.
+    before modifying it.
 
     :param board: 2d array representing current state of the game
     :param action: the column the current player played their piece in
