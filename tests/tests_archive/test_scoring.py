@@ -1,11 +1,9 @@
-import numpy as np
 # import agents.common as cm
 import agents.common_bits as cm
-from gmpy2 import mpz
 # import agents.agent_minimax.agent_minimax as agm
 # import agents.agent_alpha_beta.agent_alpha_beta as agm
 # import agents.agent_alpha_beta.alpha_beta_experiment as agm
-import agents.agent_alpha_beta.agent_alpha_beta_bits as agm
+import agents.agent_alpha_beta.alpha_beta_archive.agent_alpha_beta_bits as agm
 # import agents.agent_alpha_beta.agent_alpha_beta_22 as agm
 
 

@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional, Tuple
 from numba import njit
 from gmpy2 import popcount, mpz
-from agents.common import Board, BoardPiece, PlayerAction, SavedState,\
+from agents.common_arrays import Board, BoardPiece, PlayerAction, SavedState,\
     NO_PLAYER, GameState, apply_player_action, check_end_state, connect_four
 from agents.common_bits import Bitmap, board_to_bitmap
 
@@ -67,25 +67,25 @@ def alpha_beta(board: Board, player: BoardPiece, max_player: bool,
     potential_actions = potential_actions.reshape(potential_actions.size)
 
     # If the node is at the max depth or a terminal node calculate the score
-    max_depth = 6
+    max_depth = 4
     win_score = 150
     state_p = check_end_state(board, player)
-    state_np = check_end_state(board, BoardPiece(player % 2 + 1))
+    # state_np = check_end_state(board, BoardPiece(player % 2 + 1))
     if state_p == GameState.IS_WIN:
         if max_player:
             return GameScore(win_score), None
         else:
             return GameScore(-win_score), None
-    elif state_np == GameState.IS_WIN:
-        if max_player:
-            return GameScore(-win_score), None
-        else:
-            return GameScore(win_score), None
-    elif depth == max_depth:
-        # return heuristic_solver(board, player, max_player), None
-        return heuristic_solver_bits(board, player, max_player), None
+    # elif state_np == GameState.IS_WIN:
+    #     if max_player:
+    #         return GameScore(-win_score), None
+    #     else:
+    #         return GameScore(win_score), None
     elif state_p == GameState.IS_DRAW:
         return 0, None
+    elif depth == max_depth:
+        return heuristic_solver(board, player, max_player), None
+        # return heuristic_solver_bits(board, player, max_player), None
 
     # # If this is the root call, check for wins and block/win, prioritize wins
     # win_score = 150

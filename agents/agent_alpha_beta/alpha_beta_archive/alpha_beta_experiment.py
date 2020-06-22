@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Optional, Tuple
 from numba import njit
-from agents.common import Board, BoardPiece, PlayerAction, SavedState,\
+from agents.common_arrays import Board, BoardPiece, PlayerAction, SavedState,\
     NO_PLAYER, GameState, apply_player_action, check_end_state, connect_four
 # from agents.common_bits import Bitmap, board_to_bitmap, connect_four
 from agents.common_bits import Bitmap, board_to_bitmap

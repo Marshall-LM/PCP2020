@@ -1,7 +1,7 @@
 import numpy as np
 from enum import Enum
 from typing import Optional, Callable, Tuple
-from gmpy2 import mpz, popcount
+from gmpy2 import mpz, popcount, bit_test
 
 
 # Initialize data types
@@ -161,12 +161,12 @@ def apply_player_action(board: Board, col: PlayerAction, player: BoardPiece):
     board[top_row(board, col), col] = player
 
 
-def apply_player_action_ab(board: Bitmap, mask: Bitmap, col: PlayerAction,
+def apply_player_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
                            board_rows: int) -> [Bitmap, Bitmap]:
     """
-    This function is used only within the alpha-beta search. Copies the board,
-    and sets board[i, action] = player, where i is the lowest open row. The
-    modified board and mask are returned.
+    This function is used for move searches, not for game play. Copies the
+    board, and sets board[i, action] = player, where i is the lowest open row.
+    The modified board and mask are returned.
 
     :param board: bitmap representing positions of current player
     :param mask: bitmap representing positions of both players
@@ -227,8 +227,8 @@ def connect_four(board_map: Bitmap, board_rows: int) -> bool:
     m = board_map & (board_map >> b_shift)
     if m & (m >> (2 * b_shift)):
         return True
-    # Nothing found
-    return False
+    # # Nothing found
+    # return False
 
 
 def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
@@ -306,3 +306,18 @@ def top_row(board: Board, col: PlayerAction):
         raise IndexError('This column is full')
     else:
         return min(np.argwhere(play_col == 0)[0])
+
+
+def check_top_row(mask: Bitmap, col: PlayerAction, board_shp: Tuple) -> bool:
+    """ Checks whether the top row of the given column is full
+
+    :param mask: bitmap representing positions of both players
+    :param col: the column to be checked
+    :param board_shp: the shape of the game board
+
+    :return: True if the top row is full, False if it is empty
+    """
+    # TODO: Maybe change this to generate a vector of free columns
+
+    bit_pos = col * board_shp[1] + board_shp[0] - 1
+    return bit_test(mask, bit_pos)

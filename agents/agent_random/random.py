@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Optional, Tuple
-from agents.common import Board, BoardPiece, PlayerAction, SavedState
+from agents.common_arrays import Board, BoardPiece, PlayerAction, SavedState
 
 
 def generate_move_random(board: Board, player: BoardPiece,

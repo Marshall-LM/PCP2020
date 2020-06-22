@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Optional, Tuple
-from agents.common import Board, BoardPiece, PlayerAction, SavedState, \
+from agents.common_arrays import Board, BoardPiece, PlayerAction, SavedState, \
     NO_PLAYER, apply_player_action, connect_four
 # from agents.common_bits import Bitmap, board_to_bitmap, connect_four
 from agents.common_bits import Bitmap, board_to_bitmap

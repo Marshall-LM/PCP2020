@@ -1,5 +1,5 @@
 import numpy as np
-import agents.common as cm
+import agents.common_arrays as cm
 
 
 def test_initialize_game_state():

@@ -1,8 +1,9 @@
 import numpy as np
 from typing import Optional, Callable
-from agents.common import top_row
-from agents.common import PlayerAction, Board, BoardPiece, SavedState, GenMove
+from agents.common_arrays import top_row
+from agents.common_arrays import PlayerAction, Board, BoardPiece, SavedState, GenMove
 # from agents.agent_minimax import generate_move
+# from agents.agent_alpha_beta import generate_move, generate_move2
 from agents.agent_alpha_beta import generate_move
 import cProfile
 
@@ -52,8 +53,8 @@ def human_vs_agent(generate_move_1: GenMove,
                    init_2: Callable = lambda board, player: None):
 
     import time
-    from agents.common import PLAYER1, PLAYER2, GameState
-    from agents.common import initialize_game_state, pretty_print_board,\
+    from agents.common_arrays import PLAYER1, PLAYER2, GameState
+    from agents.common_arrays import initialize_game_state, pretty_print_board,\
         apply_player_action, check_end_state
 
     players = (PLAYER1, PLAYER2)
@@ -61,6 +62,7 @@ def human_vs_agent(generate_move_1: GenMove,
     # Play two games, where each player gets a chance to go first
     for play_first in (1, -1):
         # Initialize a string to store actions
+        game_moves_out = ''
         game_moves = ''
         # This loop initializes the variables to speed up computation when
         # using the numba compiler
@@ -94,6 +96,7 @@ def human_vs_agent(generate_move_1: GenMove,
                 print(f"Move time: {time.time() - t0:.3f}s")
 
                 # Save the move
+                game_moves_out += str(action)
                 game_moves += str(action)
                 game_moves += ', '
                 # Update the board with the action
@@ -111,13 +114,17 @@ def human_vs_agent(generate_move_1: GenMove,
                         print(f'{player_name} won playing '
                               f'{"X" if player == PLAYER1 else "O"}')
                         print(game_moves)
+                        text_file = open("tests/Test_cases_wins", "a")
+                        text_file.write(game_moves_out+'\n')
+                        text_file.close()
 
                     playing = False
                     break
 
 
-cProfile.run("human_vs_agent(generate_move, generate_move)", "tests/mmab_all_bits")
+# cProfile.run("human_vs_agent(generate_move, generate_move2)", "tests/mmab_compete")
+# cProfile.run("human_vs_agent(generate_move, generate_move)", "tests/mmab_all_bits")
 
-# if __name__ == "__main__":
-#     # human_vs_agent(user_move)
-#     human_vs_agent(generate_move)
+if __name__ == "__main__":
+    # human_vs_agent(user_move)
+    human_vs_agent(generate_move)

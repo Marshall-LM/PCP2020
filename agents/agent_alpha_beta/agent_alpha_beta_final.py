@@ -1,9 +1,9 @@
 import numpy as np
 from typing import Optional, Tuple
-from gmpy2 import popcount, mpz
-from agents.common_bits import Board, BoardPiece, Bitmap, PlayerAction,\
-    SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state,\
-    connect_four, apply_player_action_ab
+from gmpy2 import popcount
+from agents.common_bits import Board, BoardPiece, Bitmap, PlayerAction, \
+    SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state, \
+    apply_player_action_cp
 
 GameScore = np.int
 
@@ -29,19 +29,7 @@ def generate_move_alpha_beta(board: Board, player: BoardPiece,
 
     # Convert the board to bitmaps and define the min_player board
     max_board, mask_board = board_to_bitmap(board, player)
-    # min_board = max_board ^ mask_board
-    # free_board = ~mask_board
-    # Define an empty board mask
-    # empty_board = mpz('0' * board.size, base=2)
 
-    # Convert bitmaps to mpz objects
-    # max_board = mpz(max_board)
-    # mask_board = mpz(mask_board)
-    # min_board = mpz(min_board)
-    # free_board = mpz(free_board)
-    # empty_board = mpz(empty_board, base=2)
-
-    # board_cp = board.copy()
     # Call alpha_beta
     alpha0 = -100000
     beta0 = 100000
@@ -74,40 +62,34 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
     """
 
     # If the node is at the max depth or a terminal node calculate the score
-    max_depth = 6
+    max_depth = 7
     win_score = 150
     state_p = check_end_state(board, mask, board_shp)
-    not_player = board ^ mask
-    state_np = check_end_state(not_player, mask, board_shp)
     if state_p == GameState.IS_WIN:
         if max_player:
             return GameScore(win_score), None
         else:
             return GameScore(-win_score), None
-    elif state_np == GameState.IS_WIN:
-        if max_player:
-            return GameScore(-win_score), None
-        else:
-            return GameScore(win_score), None
-    elif depth == max_depth:
-        return heuristic_solver_bits(board, mask, board_shp[0], max_player), None
     elif state_p == GameState.IS_DRAW:
         return 0, None
+    elif depth == max_depth:
+        return heuristic_solver_bits(board, mask, board_shp[0], max_player), None
 
     # For each potential action, call alpha_beta
     if max_player:
         score = -100000
+        action = -1
         for col in range(board_shp[1]):
             # Apply the current action, continue if column is full
             try:
-                min_board, new_mask = apply_player_action_ab(board, mask,
+                min_board, new_mask = apply_player_action_cp(board, mask,
                                                              col, board_shp[0])
             except IndexError:
                 continue
             # Call alpha-beta
             new_score, temp = alpha_beta(min_board, new_mask, False, depth + 1,
                                          alpha, beta, board_shp)
-            new_score -= 5 * depth
+            new_score -= depth
             # Check whether the score updates
             if new_score > score:
                 score = new_score
@@ -122,17 +104,18 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
         return GameScore(score), PlayerAction(action)
     else:
         score = 100000
+        action = -1
         for col in range(board_shp[1]):
             # Apply the current action, continue if column is full
             try:
-                max_board, new_mask = apply_player_action_ab(board, mask,
+                max_board, new_mask = apply_player_action_cp(board, mask,
                                                              col, board_shp[0])
             except IndexError:
                 continue
             # Call alpha-beta
             new_score, temp = alpha_beta(max_board, new_mask, True, depth + 1,
                                          alpha, beta, board_shp)
-            new_score += 5 * depth
+            new_score += depth
             # Check whether the score updates
             if new_score < score:
                 score = new_score
@@ -151,13 +134,19 @@ def heuristic_solver_bits(player_board: Bitmap, mask_board: Bitmap,
                           board_rows: int, max_player: bool = True
                           ) -> GameScore:
     """
+    Calculates the heuristic score based on whether a player has combinations
+    of two or three in any four connected spaces, with the other spaces being
+    unoccupied. Points increase by an order of magnitude for each piece, to
+    prioritize being closer to winning.
 
+    :param player_board: bitmap representing positions of current player
+    :param mask_board: bitmap representing positions of both players
+    :param board_rows: the number of rows in the game board
+    :param max_player: boolean indicating whether the depth at which alpha_beta
+                       is called from is a maximizing or minimizing player
+
+    :return: the score associated with this particular board configuration
     """
-
-    # # Convert the boards to bitmaps and define the min_player board
-    # max_board, mask_board = board_to_bitmap(board, player)
-    # min_board = max_board ^ mask_board
-    # empty_board = ~mask_board
 
     # Initialize the score and point values
     score = 0
@@ -180,14 +169,21 @@ def heuristic_solver_bits(player_board: Bitmap, mask_board: Bitmap,
 
 def bit_solver(shift: int, player: Bitmap, not_player: Bitmap):
     """
+    Calculates the heuristic score for a particular orientation of pieces
+    (i.e. vertically aligned, horizontally aligned, right diagonal or left
+    diagonal). Each direction has a unique shift value in the bitmap.
 
+    :param shift: bit shift of the current direction being calculated
+    :param player: bitmap representing positions of the current player
+    :param not_player: bitmap representing positions of the other player
+
+    :return: the score associated with this particular direction
     """
 
     # Initialize the score and point values
     score = 0
     pt2 = 1
     pt3 = 10
-    # win_pts = 100
 
     s1_right = (player >> shift)
     s2_right = player >> (2 * shift)
@@ -198,8 +194,6 @@ def bit_solver(shift: int, player: Bitmap, not_player: Bitmap):
     s1_right_n1 = s1_right & player
     s1_left_n1 = s1_left & player
 
-    # Check for wins
-    # score += win_pts * popcount(s1_left_n1 & (s1_left_n1 >> (2 * shift)))
     # Check for 3 in 4
     # XXX-
     score += pt3 * popcount(((s1_left_n1 & s2_left) << shift)
