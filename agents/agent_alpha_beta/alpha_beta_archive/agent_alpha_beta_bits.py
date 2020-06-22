@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Optional, Tuple
 from gmpy2 import popcount, mpz
-from agents.common_bits import Board, BoardPiece, Bitmap, PlayerAction,\
+from agents.common import Board, BoardPiece, Bitmap, PlayerAction,\
     SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state,\
     connect_four, apply_player_action_cp
 

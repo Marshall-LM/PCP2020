@@ -1,5 +1,5 @@
 import numpy as np
-import agents.common_bits as cm
+import agents.common as cm
 from gmpy2 import popcount, mpz
 
 

@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from agents.common_arrays import Board, BoardPiece, PlayerAction, SavedState, \
     NO_PLAYER, apply_player_action, connect_four
 # from agents.common_bits import Bitmap, board_to_bitmap, connect_four
-from agents.common_bits import Bitmap, board_to_bitmap
+from agents.common import Bitmap, board_to_bitmap
 
 GameScore = np.int
 

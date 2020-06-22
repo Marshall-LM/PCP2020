@@ -33,7 +33,7 @@ class SavedState:
 
 
 # This provides the type hints for the generate_move function family
-GenMove = Callable[[np.ndarray, BoardPiece, Optional[SavedState]],
+GenMove = Callable[[Board, BoardPiece, Optional[SavedState]],
                    Tuple[PlayerAction, Optional[SavedState]]]
 
 

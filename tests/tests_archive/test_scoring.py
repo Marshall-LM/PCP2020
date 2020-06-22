@@ -1,5 +1,5 @@
 # import agents.common as cm
-import agents.common_bits as cm
+import agents.common as cm
 # import agents.agent_minimax.agent_minimax as agm
 # import agents.agent_alpha_beta.agent_alpha_beta as agm
 # import agents.agent_alpha_beta.alpha_beta_experiment as agm

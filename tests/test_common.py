@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import agents.common_bits as cm
+import agents.common as cm
 from agents.common_arrays import connect_four as cf_loop
 from gmpy2 import popcount, bit_flip
 
