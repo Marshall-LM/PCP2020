@@ -131,3 +131,6 @@ dmypy.json
 # PyCharm project settings
 .idea/
 .pytest_cache/
+
+# Project directories
+tests/test_stats

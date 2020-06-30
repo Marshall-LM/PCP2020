@@ -50,6 +50,6 @@ def test_alpha_beta_speed():
 # Profile my agent
 def test_profile():
     # cProfile.runctx("human_vs_agent(generate_move, generate_move)", None, None, filename='mmab')
-    cProfile.run("human_vs_agent(generate_move, generate_move)", "../mmab")
+    cProfile.run("human_vs_agent(generate_move, generate_move)", "../test_stats/mmab")
     # profile.run('human_vs_agent(generate_move, generate_move)', filename='mmab')
 
