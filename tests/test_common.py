@@ -109,9 +109,9 @@ def generate_full_board(arr_board, player, empty_spaces=0):
                 move = -1
 
         # Apply the move to both boards
-        cm.apply_player_action(arr_board, move, player)
-        bit_board, bit_mask = cm.apply_player_action_cp(bit_board, bit_mask,
-                                                        move, bd_shp[0])
+        cm.apply_action(arr_board, move, player)
+        bit_board, bit_mask = cm.apply_action_cp(bit_board, bit_mask,
+                                                 move, bd_shp[0])
         # Switch to the next player
         player = cm.BoardPiece(player % 2 + 1)
 
@@ -134,7 +134,7 @@ def test_apply_player_action():
     for i in range(100):
         with pytest.raises(IndexError):
             move = np.random.choice(arr_board.shape[1])
-            cm.apply_player_action_cp(bit_b, bit_m, move, arr_board.shape[0])
+            cm.apply_action_cp(bit_b, bit_m, move, arr_board.shape[0])
 
     # Print the board
     board_str = cm.pretty_print_board(arr_board)
@@ -163,9 +163,9 @@ def test_connect_four_bits():
                 break
             # Apply the move
             move = cm.PlayerAction(char)
-            bit_b, bit_m = cm.apply_player_action_cp(bit_b, bit_m,
-                                                     move, bd_shp[0])
-            cm.apply_player_action(arr_board, move, player)
+            bit_b, bit_m = cm.apply_action_cp(bit_b, bit_m,
+                                              move, bd_shp[0])
+            cm.apply_action(arr_board, move, player)
             # Switch the player
             player = cm.BoardPiece(player % 2 + 1)
         # Print the board for visual check

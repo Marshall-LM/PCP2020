@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from gmpy2 import popcount
 from agents.common import Board, BoardPiece, Bitmap, PlayerAction, \
     SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state, \
-    apply_player_action_cp
+    apply_action_cp
 
 GameScore = np.int
 
@@ -82,8 +82,8 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
         for col in range(board_shp[1]):
             # Apply the current action, continue if column is full
             try:
-                min_board, new_mask = apply_player_action_cp(board, mask,
-                                                             col, board_shp[0])
+                min_board, new_mask = apply_action_cp(board, mask,
+                                                      col, board_shp[0])
             except IndexError:
                 continue
             # Call alpha-beta
@@ -108,8 +108,8 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
         for col in range(board_shp[1]):
             # Apply the current action, continue if column is full
             try:
-                max_board, new_mask = apply_player_action_cp(board, mask,
-                                                             col, board_shp[0])
+                max_board, new_mask = apply_action_cp(board, mask,
+                                                      col, board_shp[0])
             except IndexError:
                 continue
             # Call alpha-beta

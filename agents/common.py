@@ -144,7 +144,7 @@ def string_to_board(pp_board: str) -> Board:
     return board_arr
 
 
-def apply_player_action(board: Board, col: PlayerAction, player: BoardPiece):
+def apply_action(board: Board, col: PlayerAction, player: BoardPiece):
     """
     This function is used only in the main function. Applies the action by
     modifying board in place. Sets board[i, action] = player, where i is the
@@ -161,8 +161,8 @@ def apply_player_action(board: Board, col: PlayerAction, player: BoardPiece):
     board[top_row(board, col), col] = player
 
 
-def apply_player_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
-                           board_rows: int) -> [Bitmap, Bitmap]:
+def apply_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
+                    board_rows: int) -> [Bitmap, Bitmap]:
     """
     This function is used for move searches, not for game play. Copies the
     board, and sets board[i, action] = player, where i is the lowest open row.
@@ -317,7 +317,28 @@ def check_top_row(mask: Bitmap, col: PlayerAction, board_shp: Tuple) -> bool:
 
     :return: True if the top row is full, False if it is empty
     """
-    # TODO: Maybe change this to generate a vector of free columns
 
     bit_pos = col * board_shp[1] + board_shp[0] - 1
     return bit_test(mask, bit_pos)
+
+
+# def valid_actions(mask: Bitmap, board_shp: Tuple) -> np.ndarray:
+def valid_actions(mask: Bitmap, board_shp: Tuple) -> list:
+
+    """ Determines which actions are valid for the current game state
+
+    :param mask: bitmap representing positions of both players
+    :param board_shp: the shape of the game board
+
+    :return: array of valid actions
+    """
+
+    # actions = np.ndarray(0)
+    actions = []
+    for col in range(board_shp[1]):
+        bit_pos = col * board_shp[1] + board_shp[0] - 1
+        if bit_test(mask, bit_pos):
+            # actions = np.append(actions, col)
+            actions.append(col)
+
+    return actions
