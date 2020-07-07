@@ -5,6 +5,36 @@ from agents.common_arrays import connect_four as cf_loop
 from gmpy2 import popcount, bit_flip
 
 
+def generate_full_board(player, empty_spaces=0):
+    # Generate an empty board
+    arr_board = cm.initialize_game_state()
+    # Convert board to bitmap
+    bit_board, bit_mask = cm.board_to_bitmap(arr_board, player)
+    # Calculate the board shape
+    bd_shp = arr_board.shape
+
+    # While the board is not full, continue placing pieces
+    while popcount(bit_mask) != bd_shp[0] * bd_shp[1] - empty_spaces:
+        # Select a random move in a column that is not full
+        move = -1
+        while not (0 <= move < bd_shp[1]):
+            move = np.random.choice(bd_shp[1])
+            try:
+                move = cm.PlayerAction(move)
+                cm.top_row(arr_board, move)
+            except IndexError:
+                move = -1
+
+        # Apply the move to both boards
+        cm.apply_action(arr_board, move, player)
+        bit_board, bit_mask = cm.apply_action_cp(bit_board, bit_mask,
+                                                 move, bd_shp)
+        # Switch to the next player
+        player = cm.BoardPiece(player % 2 + 1)
+
+    return arr_board, bit_board, bit_mask, player
+
+
 def test_initialize_game_state():
     test_board = cm.initialize_game_state()
 
@@ -26,6 +56,23 @@ def test_pretty_print_board():
     print(board_str)
 
     assert isinstance(board_str, str)
+    return
+
+
+def test_bitmap_to_board():
+    player = cm.PLAYER1
+    test_board = generate_full_board(player, empty_spaces=15)[0]
+    board_str = cm.pretty_print_board(test_board)
+    print('')
+    print(board_str)
+
+    board, mask = cm.board_to_bitmap(test_board, cm.PLAYER1)
+    board_arr = cm.bitmap_to_board(board, mask, test_board.shape)
+    board_str = cm.pretty_print_board(board_arr)
+    print('')
+    print(board_str)
+
+    assert np.all(test_board == board_arr)
     return
 
 
@@ -90,41 +137,11 @@ def test_board_to_bitmap():
     return
 
 
-def generate_full_board(arr_board, player, empty_spaces=0):
-    # Convert board to bitmap
-    bit_board, bit_mask = cm.board_to_bitmap(arr_board, player)
-    # Calculate the board shape
-    bd_shp = arr_board.shape
-
-    # While the board is not full, continue placing pieces
-    while popcount(bit_mask) != bd_shp[0] * bd_shp[1] - empty_spaces:
-        # Select a random move in a column that is not full
-        move = -1
-        while not (0 <= move < bd_shp[1]):
-            move = np.random.choice(bd_shp[1])
-            try:
-                move = cm.PlayerAction(move)
-                cm.top_row(arr_board, move)
-            except IndexError:
-                move = -1
-
-        # Apply the move to both boards
-        cm.apply_action(arr_board, move, player)
-        bit_board, bit_mask = cm.apply_action_cp(bit_board, bit_mask,
-                                                 move, bd_shp[0])
-        # Switch to the next player
-        player = cm.BoardPiece(player % 2 + 1)
-
-    return arr_board, bit_board, bit_mask, player
-
-
 def test_apply_player_action():
     # Set the first player as P1
     player = cm.PLAYER1
-    # Initialize an empty board and make a bitmap copy
-    arr_board = cm.initialize_game_state()
     # Generate a full board
-    arr_board, bit_b, bit_m, player = generate_full_board(arr_board, player)
+    arr_board, bit_b, bit_m, player = generate_full_board(player)
     # Check that both boards are the same
     check_board, check_mask = cm.board_to_bitmap(arr_board, player)
     assert check_board == bit_b
@@ -134,7 +151,7 @@ def test_apply_player_action():
     for i in range(100):
         with pytest.raises(IndexError):
             move = np.random.choice(arr_board.shape[1])
-            cm.apply_action_cp(bit_b, bit_m, move, arr_board.shape[0])
+            cm.apply_action_cp(bit_b, bit_m, move, arr_board.shape)
 
     # Print the board
     board_str = cm.pretty_print_board(arr_board)
@@ -164,7 +181,7 @@ def test_connect_four_bits():
             # Apply the move
             move = cm.PlayerAction(char)
             bit_b, bit_m = cm.apply_action_cp(bit_b, bit_m,
-                                              move, bd_shp[0])
+                                              move, bd_shp)
             cm.apply_action(arr_board, move, player)
             # Switch the player
             player = cm.BoardPiece(player % 2 + 1)
@@ -180,10 +197,8 @@ def test_connect_four_bits():
     for i in range(n_boards):
         # Set the first player as P1
         player = cm.PLAYER1
-        # Initialize an empty board and make a bitmap copy
-        arr_b = cm.initialize_game_state()
         # Generate a full board
-        arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
+        arr_b, bit_b, bit_m, player = generate_full_board(player)
         # Test both connect_four functions and for both players
         assert cf_loop(arr_b, player) == cm.connect_four(bit_b, arr_b.shape[0])
         player = cm.BoardPiece(player % 2 + 1)
@@ -202,10 +217,8 @@ def test_check_end_state():
     for i in range(n_boards):
         # Set the first player as P1
         player = cm.PLAYER1
-        # Initialize an empty board and make a bitmap copy
-        arr_b = cm.initialize_game_state()
         # Generate a full board
-        arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
+        arr_b, bit_b, bit_m, player = generate_full_board(player)
         # Set a variable to determine whether a bit is flipped
         p_flip = 0.3
         # Check for wins
@@ -243,10 +256,8 @@ def test_top_row():
     for i in range(n_boards):
         # Set the first player as P1
         player = cm.PLAYER1
-        # Initialize an empty board and make a bitmap copy
-        arr_b = cm.initialize_game_state()
         # Generate a full board
-        arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
+        arr_b, bit_b, bit_m, player = generate_full_board(player)
         # Set a variable to determine whether a bit is flipped
         p_flip = 0.5
         # Randomly choose a column to flip
@@ -272,21 +283,71 @@ def test_check_top_row():
     for i in range(n_boards):
         # Set the first player as P1
         player = cm.PLAYER1
-        # Initialize an empty board and make a bitmap copy
-        arr_b = cm.initialize_game_state()
-        # Generate a full board
-        arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
         # Set a variable to determine whether a bit is flipped
         p_flip = 0.5
-        # Randomly choose a column to flip
-        fcol = np.random.choice(arr_b.shape[1])
-        for col in range(arr_b.shape[1]):
-            if col == fcol:
-                if np.random.uniform() < p_flip:
-                    bit_pos = fcol * arr_b.shape[1] + arr_b.shape[0] - 1
-                    bit_m = bit_flip(bit_m, bit_pos)
+
+        if np.random.uniform() < p_flip:
+            arr_b, bit_b, bit_m, player = generate_full_board(player, 1)
+            for col in range(arr_b.shape[1]):
+                try:
+                    cm.top_row(arr_b, col)
+                    # print('')
+                    # print('Column {} is not full'.format(col))
+                    # print(cm.pretty_print_board(arr_b))
                     assert not cm.check_top_row(bit_m, col, arr_b.shape)
-                else:
+                except IndexError:
                     assert cm.check_top_row(bit_m, col, arr_b.shape)
-            else:
+        else:
+            arr_b, bit_b, bit_m, player = generate_full_board(player)
+            for col in range(arr_b.shape[1]):
                 assert cm.check_top_row(bit_m, col, arr_b.shape)
+
+        # # Generate a full board
+        # arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
+        # # Randomly choose a column to flip
+        # fcol = np.random.choice(arr_b.shape[1])
+        # for col in range(arr_b.shape[1]):
+        #     if col == fcol:
+        #         if np.random.uniform() < p_flip:
+        #             bit_pos = fcol * arr_b.shape[1] + arr_b.shape[0] - 1
+        #             bit_m = bit_flip(bit_m, bit_pos)
+        #             assert not cm.check_top_row(bit_m, col, arr_b.shape)
+        #         else:
+        #             assert cm.check_top_row(bit_m, col, arr_b.shape)
+        #     else:
+        #         assert cm.check_top_row(bit_m, col, arr_b.shape)
+
+
+def test_valid_actions():
+    # Generate many random boards and select actions using valid_actions
+    n_boards = 500
+    for i in range(n_boards):
+        # Set the first player as P1
+        player = cm.PLAYER1
+        # Initialize an empty board and make a bitmap copy
+        arr_board = cm.initialize_game_state()
+        # Convert board to bitmap
+        bit_board, bit_mask = cm.board_to_bitmap(arr_board, player)
+        # Calculate the board shape
+        bd_shp = arr_board.shape
+        # Calculate the number of positions in the board
+        n_pos = bd_shp[0] * bd_shp[1]
+
+        # While the board is not full, continue placing pieces
+        n_moves = 0
+        while popcount(bit_mask) != n_pos:
+            # Select an action
+            valid_moves = cm.valid_actions(bit_mask, bd_shp)
+            move = np.random.choice(valid_moves)
+            # Apply the move to both boards
+            cm.apply_action(arr_board, move, player)
+            bit_board, bit_mask = cm.apply_action_cp(bit_board, bit_mask,
+                                                     move, bd_shp)
+            # Switch to the next player
+            player = cm.BoardPiece(player % 2 + 1)
+            # Increment the move counter
+            n_moves += 1
+
+        # print(cm.pretty_print_board(arr_board))
+        # Ensure only the minimum number of moves was required
+        assert n_moves == n_pos

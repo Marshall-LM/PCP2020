@@ -3,7 +3,8 @@ from agents.common_arrays import top_row
 from agents.common_arrays import PlayerAction, Board, BoardPiece, SavedState, GenMove
 # from agents.agent_minimax import generate_move
 # from agents.agent_alpha_beta import generate_move, generate_move2
-from agents.agent_alpha_beta import generate_move
+# from agents.agent_alpha_beta import generate_move
+from agents.agent_mcts import generate_move
 
 
 def user_move(board: Board, _player: BoardPiece,

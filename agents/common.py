@@ -101,9 +101,60 @@ def pretty_print_board(board: Board) -> str:
     return board_str
 
 
+def bitmap_to_board(board: Bitmap, mask: Bitmap, bd_shp: Tuple) -> Board:
+    """ Converts the bitmap board into an nd.array for printing purposes.
+
+    :param board: bitmap representing positions of current player
+    :param mask: bitmap representing positions of both players
+    :param bd_shp: tuple providing the shape of the game board (rows, cols)
+
+    :return: array representing the current state of the game
+    """
+
+    # Generate an empty board
+    board_arr = initialize_game_state()
+
+    # Pad the bitmaps if they are not full length
+    board_size = (bd_shp[0] + 1) * bd_shp[1] - 1
+    mask_str = bin(mask)[2:]
+    # print(mask.bit_length())
+    if mask.bit_length() != board_size:
+        add_str = '0' * (board_size - mask.bit_length())
+        mask_str = add_str + mask_str
+    # print(mask_str)
+    board_str = bin(board)[2:]
+    # print(board.bit_length())
+    if board.bit_length() != board_size:
+        add_str = '0' * (board_size - board.bit_length())
+        board_str = add_str + board_str
+    # print(board_str)
+
+    # The first position in the bitmap represents the top-right array position
+    bit_pos = len(mask_str)
+    for cnt, bit in enumerate(mask_str):
+        row = bit_pos % bd_shp[1] - 1
+        col = bit_pos // bd_shp[1]
+        # print(bit_pos)
+        # print(row)
+        # print(col)
+        # print('Loop count', cnt+1)
+        # print('')
+        if row == (bd_shp[0]):
+            bit_pos -= 1
+            continue
+        elif bit == '1':
+            if board_str[cnt] == '1':
+                board_arr[row, col] = BoardPiece(1)
+            else:
+                board_arr[row, col] = BoardPiece(2)
+        bit_pos -= 1
+
+    return board_arr
+
+
 def string_to_board(pp_board: str) -> Board:
     """
-    Converts a string representing the game state to an ndarray game board
+    Converts a string representing the game state to an nd.array game board
 
     :param pp_board: string representing the current state of the game
     :return: 2d array representing current state of the game
@@ -162,7 +213,7 @@ def apply_action(board: Board, col: PlayerAction, player: BoardPiece):
 
 
 def apply_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
-                    board_rows: int) -> [Bitmap, Bitmap]:
+                    board_shape: Tuple) -> [Bitmap, Bitmap]:
     """
     This function is used for move searches, not for game play. Copies the
     board, and sets board[i, action] = player, where i is the lowest open row.
@@ -171,7 +222,7 @@ def apply_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
     :param board: bitmap representing positions of current player
     :param mask: bitmap representing positions of both players
     :param col: the column the current player played their piece in
-    :param board_rows: the number of rows in the game board
+    :param board_shape: tuple representing the game board shape (rows, cols)
 
     :return: returns two bitmaps
         next_player = bitmap representing positions of next player to play
@@ -179,8 +230,12 @@ def apply_action_cp(board: Bitmap, mask: Bitmap, col: PlayerAction,
     """
 
     # If the column is full, raise an Exception
+    board_rows = board_shape[0]
     top_mask = mpz(bin((1 << (board_rows - 1)) << (col * (board_rows + 1))))
     if (mask & top_mask) != 0:
+        board_arr = bitmap_to_board(board, mask, board_shape)
+        print('Column selected is {}'.format(col))
+        print(pretty_print_board(board_arr))
         raise IndexError
     # top_mask = (1 << (board_rows - 1)) << (col * (board_rows + 1))
     # if (int(mask) & top_mask) != 0:
@@ -232,9 +287,16 @@ def connect_four(board_map: Bitmap, board_rows: int) -> bool:
 
 
 def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
-    """
-    Converts the nd.array board into a bitmap for faster calculations. Bitmap used
-    to improve computation speed so that agent can train faster.
+    """ Converts the nd.array board into a bitmap for faster calculations.
+
+    Bitmap used to improve computation speed so that agent can train faster.
+    The left-most bit in the bitmap represents the last position in the array
+    board. The array board positions count from the top-right, down each row
+    before moving to the next column. There is a sentinel row at the top of
+    the array board. In the 6x7 board, the first bit is position 48, which is
+    the top (sentinel row) in the right-most column. The next bit is position
+    47, which represents the second row from the top, in the right-most column,
+    etc...
 
     :param board: 2d array representing current state of the game
     :param player: the player who made the last move (active player)
@@ -247,16 +309,14 @@ def board_to_bitmap(board: Board, player: BoardPiece) -> [Bitmap, Bitmap]:
     position, mask = '', ''
     bd_shp = board.shape
 
-    # Start with top row
+    # Build the bitmap backwards, starting with the right-most column
     for col in range(bd_shp[1] - 1, -1, -1):
-        # Add 0-bits to sentinel column to avoid rollover errors
+        # Add 0-bits to sentinel row to avoid rollover errors
         mask += '0'
         position += '0'
 
-        # Start with right column
+        # Start with top row
         for row in range(bd_shp[0] - 1, -1, -1):
-            # if board[row, col] != 0:
-            #     print('board[%i, %i] = %i' % (row, col, board[row, col]))
             mask += ('1' if board[row, col] != NO_PLAYER else '0')
             position += ('1' if board[row, col] == player else '0')
 
@@ -308,6 +368,7 @@ def top_row(board: Board, col: PlayerAction):
         return min(np.argwhere(play_col == 0)[0])
 
 
+# TODO: this function doesn't work properly, and the test doesn't catch it
 def check_top_row(mask: Bitmap, col: PlayerAction, board_shp: Tuple) -> bool:
     """ Checks whether the top row of the given column is full
 
@@ -337,7 +398,7 @@ def valid_actions(mask: Bitmap, board_shp: Tuple) -> list:
     actions = []
     for col in range(board_shp[1]):
         bit_pos = col * board_shp[1] + board_shp[0] - 1
-        if bit_test(mask, bit_pos):
+        if not bit_test(mask, bit_pos):
             # actions = np.append(actions, col)
             actions.append(col)
 

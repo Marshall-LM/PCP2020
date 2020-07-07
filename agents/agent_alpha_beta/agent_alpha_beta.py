@@ -83,7 +83,7 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
             # Apply the current action, continue if column is full
             try:
                 min_board, new_mask = apply_action_cp(board, mask,
-                                                      col, board_shp[0])
+                                                      col, board_shp)
             except IndexError:
                 continue
             # Call alpha-beta
@@ -109,7 +109,7 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
             # Apply the current action, continue if column is full
             try:
                 max_board, new_mask = apply_action_cp(board, mask,
-                                                      col, board_shp[0])
+                                                      col, board_shp)
             except IndexError:
                 continue
             # Call alpha-beta
