@@ -3,7 +3,7 @@ from typing import Optional, Tuple, List
 from time import time
 from agents.common import Board, BoardPiece, Bitmap, PlayerAction, \
     SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state, \
-    apply_action_cp, check_top_row, valid_actions
+    apply_action_cp, valid_actions
 
 
 # Declare a global constant for calculating the UCB1 score
@@ -24,6 +24,8 @@ def generate_move_mcts(board: Board, player: BoardPiece,
     :return: the agent's selected move
     """
 
+    # TODO: return chosen action subtree using saved_state, to improve
+    #  performance
     # Calculate the board shape
     bd_shp = board.shape
     # If the board is empty, play in the center column
@@ -34,7 +36,7 @@ def generate_move_mcts(board: Board, player: BoardPiece,
     # Convert the board to bitmaps and define the min_player board
     max_board, mask_board = board_to_bitmap(board, player)
     # Create a root node
-    root_mcts = Connect4Node(max_board, mask_board, bd_shp, 0, True)
+    root_mcts = Connect4Node(max_board, mask_board, bd_shp, -1, True)
     # Call MCTS
     action = mcts(root_mcts)
 
@@ -54,26 +56,12 @@ def mcts(root_node):
 
     """
 
-    # # If the node has no children, create one and simulate a game
-    # if not self.children:
-    #     action = PlayerAction(self.actions[0])
-    #     self.add_child(Connect4Node(self.board, self.mask, self.shape,
-    #                                 action, not self.max_player, self.sp))
-    #     return self.sim_game()
-    # # If node has any unexpanded children, create one and simulate a game
-    # elif len(self.children) < len(self.actions):
-    # if len(self.children) < len(self.actions):
-    #     action = PlayerAction(self.actions[len(self.children)])
-    #     self.add_child(Connect4Node(self.board, self.mask, self.shape,
-    #                                 action, not self.max_player, self.sp))
-    #     return self.sim_game()
-
+    # TODO: return chosen action subtree using saved_state, to improve
+    #  performance
     start_time = time()
     curr_time = time()
     while (curr_time - start_time) < 1.0:
-        # action = self.ucb1_select()
         max_win = root_node.traverse()
-        # self.update_stats(self, winner)
         if max_win:
             root_node.wi += 1
         root_node.si += 1
@@ -120,8 +108,18 @@ class Connect4Node:
             Number of simulation wins node is involved in
 
     Methods
-        make_move()
-            Determines next child to visit in the game tree.
+        add_child()
+            Adds a Connect4Node to the current node's list of children
+        traverse()
+            Searches the tree until a node with unexpanded children is found
+        sim_game()
+            Simulates a game to completion beginning with current node's state
+        update_stats()
+            Updates the MCTS stats for a given node
+        ucb1_select()
+            Determines which child node to select using UCB1 criteria
+        ucb1_calc()
+            Calculates the UCB1 value for a particular child node
 
     """
 
@@ -137,17 +135,15 @@ class Connect4Node:
         """
 
         # Update the game state and save game state attributes
-        self.board, self.mask = apply_action_cp(board, mask, node_col,
-                                                board_shp)
+        self.board, self.mask = board, mask
         self.shape: Tuple = board_shp
         self.node_col: int = node_col
         self.max_player: bool = max_player
         self.state = check_end_state(self.board, self.mask, self.shape)
 
         # Node attributes
-        # self.actions = valid_actions(mask, board_shp)
         # Randomize the order of actions (i.e. the order of node creation)
-        self.actions: List[int] = valid_actions(mask, board_shp)
+        self.actions: List[int] = valid_actions(self.mask, board_shp)
         np.random.shuffle(self.actions)
         self.children: List[Connect4Node] = []
         self.children_ucb1: List[float] = []
@@ -171,7 +167,7 @@ class Connect4Node:
         self.children.append(node)
 
     def traverse(self):
-        """ Take an action determined by the UCB1 criteria
+        """ Searches the tree until a node with unexpanded children is found
 
         This function is called recursively during the selection phase of MCTS.
         Recursion ceases once it reaches a node with unexpanded children. At
@@ -183,7 +179,6 @@ class Connect4Node:
             node = node selected by root node or previous select_action call
         """
 
-        # TODO: is this the optimization he was talking about?
         # Check whether the current node is a terminal state
         if self.state == GameState.IS_WIN:
             if self.max_player:
@@ -197,8 +192,11 @@ class Connect4Node:
         if len(self.children) < len(self.actions):
             # Select the next randomized action in the list
             action = PlayerAction(self.actions[len(self.children)])
+            # Apply the action to the current board
+            child_bd, child_msk = apply_action_cp(self.board, self.mask,
+                                                  action, self.shape)
             # Add the new child to the node
-            new_child = Connect4Node(self.board, self.mask, self.shape,
+            new_child = Connect4Node(child_bd, child_msk, self.shape,
                                      action, not self.max_player)
             # If the game does not end, continue building the tree
             self.add_child(new_child)
@@ -224,13 +222,11 @@ class Connect4Node:
         state, either a win or a draw. It then returns the value associated
         with this state, which is propagated back up the tree to the root,
         updating the stats along the way.
-        # TODO: "Before returning, it updates the stats of new_node."?
-        # TODO: why is this instantiating new nodes?
 
         Returns
-            1.0 if max_player wins
-            0.0 if min_player wins
-            0.5 if the result is a draw
+            True if max_player wins
+            False if min_player wins
+            -1 if the result is a draw
         """
 
         # Randomly choose a valid action until the game ends
@@ -238,11 +234,6 @@ class Connect4Node:
         game_state = check_end_state(sim_board, sim_mask, self.shape)
         curr_max_p = self.max_player
         while game_state == GameState.STILL_PLAYING:
-            # action = -1
-            # invalid_action = True
-            # while invalid_action:
-            #     action = np.random.choice(self.shape[1])
-            #     invalid_action = check_top_row(new_board, new_mask, self.shape)
             # Randomly select an action
             action = np.random.choice(valid_actions(sim_mask, self.shape))
             # Apply the action to the board
@@ -266,7 +257,12 @@ class Connect4Node:
             print('Error in Simulation')
 
     def update_stats(self, max_win):
-        """ Updates the MCTS stats for a given node """
+        """ Updates the MCTS stats for a given node
+
+        Parameters
+            max_win = value indicating whether the simulated game's winner
+                      was max_player, or whether the game was a draw
+        """
 
         # Set score values
         win_score = 1.0
@@ -279,9 +275,8 @@ class Connect4Node:
         self.si += 1
 
     def ucb1_select(self):
-        """ Determines which node to select during selection phase """
+        """ Determines which child node to select using UCB1 criteria """
 
-        # TODO: make sure this function works properly
         max_ucb1 = 0
         select_node = []
         # Calculate UCB1 for each child and select child with largest
