@@ -1,0 +1,1816 @@
+Testing started at 12:57 ...
+/home/marshineer/anaconda3/bin/python3 /snap/pycharm-community/205/plugins/python-ce/helpers/pycharm/_jb_pytest_runner.py --target test_mcts.py::test_mcts_algorithm
+Launching pytest with arguments test_mcts.py::test_mcts_algorithm in /home/marshineer/Dropbox/Ubuntu/PycharmProjects/PCP2020/tests
+
+============================= test session starts ==============================
+platform linux -- Python 3.7.4, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 -- /home/marshineer/anaconda3/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/marshineer/Dropbox/Ubuntu/PycharmProjects/PCP2020/tests
+plugins: arraydiff-0.3, remotedata-0.3.2, openfiles-0.4.0, doctestplus-0.4.0
+collecting ... collected 1 item
+
+test_mcts.py::test_mcts_algorithm PASSED                                 [100%]_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|      O  X         |
+|      X  O         |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 2, player 2 should win in 5 at most move(s)
+_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|      O  X         |
+|O     X  O         |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|      O  X         |
+|O     X  O  X      |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|      O  X         |
+|O  O  X  O  X      |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|X     O  X         |
+|O  O  X  O  X      |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  O         |
+|      O  X         |
+|X  O  O  X         |
+|O  O  X  O  X      |
+|X  O  X  X  O      |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 2, 4, 0, 1, 2, 2, 3, 2, 3, 3, 2, 0, 4, 1, 0, 1]
+Player 2 won in 5 moves
+_____________________
+|      X            |
+|      O  X         |
+|O     O  O         |
+|X     O  O     X   |
+|X     X  X     O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 5, player 2 should win in 5 at most move(s)
+_____________________
+|      X            |
+|      O  X         |
+|O     O  O     O   |
+|X     O  O     X   |
+|X     X  X     O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X            |
+|X     O  X         |
+|O     O  O     O   |
+|X     O  O     X   |
+|X     X  X     O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X            |
+|X     O  X         |
+|O     O  O     O   |
+|X     O  O     X   |
+|X     X  X  O  O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X            |
+|X     O  X     X   |
+|O     O  O     O   |
+|X     O  O     X   |
+|X     X  X  O  O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X            |
+|X     O  X     X   |
+|O     O  O     O   |
+|X     O  O  O  X   |
+|X     X  X  O  O   |
+|X     O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 2, 3, 3, 2, 0, 2, 5, 2, 2, 5, 0, 4, 0, 0, 5, 5, 0, 4, 5, 4]
+Player 2 won in 5 moves
+_____________________
+|            X      |
+|   X     O  O      |
+|O  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O   |
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 6, player 1 should win in 9 at most move(s)
+_____________________
+|            X      |
+|   X     O  O      |
+|O  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O  X|
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   X     O  O  O   |
+|O  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O  X|
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   X     O  O  O   |
+|O  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X  X  O  X  O  X|
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   X     O  O  O   |
+|O  X     X  O  X   |
+|O  O     X  O  O  O|
+|X  X  X  O  X  O  X|
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   X     O  O  O   |
+|O  X     X  O  X   |
+|O  O  X  X  O  O  O|
+|X  X  X  O  X  O  X|
+|X  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 5, 1, 2, 4, 4, 1, 1, 3, 4, 3, 4, 4, 3, 0, 5, 0, 5, 5, 0, 1, 0, 1, 6, 6, 5, 2, 6, 2]
+Player 1 won in 5 moves
+_____________________
+|               O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X   |
+|O     X  O     O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 1, player 2 should win in 3 at most move(s)
+_____________________
+|      O        O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X   |
+|O     X  O     O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X   |
+|O     X  O     O   |
+|X  X  O  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X   |
+|O     X  O     O  O|
+|X  X  O  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X  X|
+|O     X  O     O  O|
+|X  X  O  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        O   |
+|O     O  O     X   |
+|X     O  O     X   |
+|X     X  X     X  X|
+|O     X  O  O  O  O|
+|X  X  O  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 2, 2, 5, 3, 3, 2, 5, 5, 2, 5, 2, 5, 5, 0, 0, 0, 3, 0, 0, 1, 2, 6, 6, 6, 4]
+Player 2 won in 5 moves
+_____________________
+|            X      |
+|   O     O  O      |
+|   X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 0, player 1 should win in 3 at most move(s)
+_____________________
+|            X      |
+|   O     O  O      |
+|X  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   O     O  O  O   |
+|X  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X     O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|   O     O  O  O   |
+|X  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X  X  O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|O  O     O  O  O   |
+|X  X     X  O  X   |
+|O  O     X  O  O   |
+|X  X  X  O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|O  O     O  O  O   |
+|X  X     X  O  X   |
+|O  O  X  X  O  O   |
+|X  X  X  O  X  O   |
+|X  X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 5, 1, 2, 4, 4, 3, 4, 3, 4, 4, 3, 1, 1, 0, 5, 1, 5, 5, 1, 0, 0, 0, 5, 2, 0, 2]
+Player 1 won in 5 moves
+_____________________
+|                   |
+|      X  O        O|
+|X     O  X        X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X     X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 5, player 1 should win in 5 at most move(s)
+_____________________
+|                   |
+|      X  O        O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X     X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  O        O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|X     X  O        O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O            |
+|X     X  O        O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O           X|
+|X     X  O        O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O           X|
+|X     X  O     O  O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X  X|
+|X     X  O     O  O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X     O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X  X|
+|X     X  O     O  O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O     O  X     X  O|
+|X  O  O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X  X|
+|X     X  O     O  O|
+|X     O  X     X  X|
+|O     X  O     O  X|
+|O  X  O  X     X  O|
+|X  O  O  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 3, 2, 2, 2, 5, 6, 0, 6, 6, 0, 6, 0, 0, 3, 2, 6, 5, 5, 5, 4, 0, 2, 6, 5, 5, 1, 1]
+Player 1 won in 9 moves
+_____________________
+|      O            |
+|      O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 2, player 1 should win in 3 at most move(s)
+_____________________
+|      O        X   |
+|      O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X   |
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X  X|
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O        X  X|
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  X     X  X|
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  X     X  X|
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X     X  X     O  X|
+|O  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  X     X  X|
+|O     O  X     O  X|
+|O     X  O     X  O|
+|X     O  O     X  X|
+|X  X  X  X     O  X|
+|O  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 6, 5, 2, 5, 5, 3, 3, 2, 2, 0, 0, 2, 0, 0, 5, 5, 6, 4, 6, 6, 6, 2, 5, 0, 6, 0, 3, 1, 1]
+Player 1 won in 7 moves
+_____________________
+|X     O  X     X  O|
+|X     O  X     X  O|
+|O     X  X     O  O|
+|O     O  O     X  X|
+|X     O  X     X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 6, player 1 should win in 9 at most move(s)
+_____________________
+|X     O  X     X  O|
+|X     O  X     X  O|
+|O     X  X     O  O|
+|O     O  O     X  X|
+|X     O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X     X  O|
+|X     O  X     X  O|
+|O     X  X     O  O|
+|O     O  O  O  X  X|
+|X     O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X     X  O|
+|X     O  X     X  O|
+|O     X  X  X  O  O|
+|O     O  O  O  X  X|
+|X     O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X     X  O|
+|X     O  X  O  X  O|
+|O     X  X  X  O  O|
+|O     O  O  O  X  X|
+|X     O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X  X  X  O|
+|X     O  X  O  X  O|
+|O     X  X  X  O  O|
+|O     O  O  O  X  X|
+|X     O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X  X  X  O|
+|X     O  X  O  X  O|
+|O     X  X  X  O  O|
+|O     O  O  O  X  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     O  X  X  X  O|
+|X     O  X  O  X  O|
+|O     X  X  X  O  O|
+|O  X  O  O  O  X  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 5, 2, 1, 3, 3, 5, 2, 5, 5, 3, 2, 2, 2, 6, 6, 6, 6, 3, 2, 5, 0, 0, 0, 3, 0, 0, 6, 0, 4, 5, 6, 4, 4, 4, 4, 4, 1, 1]
+Player 1 won in 7 moves
+_____________________
+|                   |
+|                   |
+|      O  O         |
+|      O  X  O  X   |
+|   O  X  O  X  X   |
+|X  O  X  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 5, player 2 should win in 3 at most move(s)
+_____________________
+|                   |
+|                   |
+|      O  O  O      |
+|      O  X  O  X   |
+|   O  X  O  X  X   |
+|X  O  X  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|            X      |
+|      O  O  O      |
+|      O  X  O  X   |
+|   O  X  O  X  X   |
+|X  O  X  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|            X      |
+|      O  O  O  O   |
+|      O  X  O  X   |
+|   O  X  O  X  X   |
+|X  O  X  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 5, 2, 1, 4, 4, 2, 2, 3, 3, 5, 1, 0, 2, 5, 4, 4, 5]
+Player 2 won in 3 moves
+_____________________
+|                   |
+|         O         |
+|         X         |
+|      O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 2, player 1 should win in 5 at most move(s)
+_____________________
+|                   |
+|         O         |
+|      X  X         |
+|      O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|         O         |
+|      X  X  O      |
+|      O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|         O         |
+|      X  X  O      |
+|   X  O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      O  O         |
+|      X  X  O      |
+|   X  O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      O  O         |
+|   X  X  X  O      |
+|   X  O  X  O      |
+|   X  O  O  X      |
+|   X  O  X  X  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 5, 1, 2, 4, 4, 3, 2, 3, 3, 1, 2, 2, 4, 1, 2, 1]
+Player 1 won in 5 moves
+_____________________
+|         O         |
+|X     O  X  X      |
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 2, player 1 should win in 3 at most move(s)
+_____________________
+|         O  X      |
+|X     O  X  X      |
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         O  X      |
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         O  X     X|
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O        O  X     X|
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X     X|
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O     X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X     X|
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O     O|
+|X  X  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X     X|
+|X     O  X  X     O|
+|O     X  X  O     O|
+|O     O  O  X     X|
+|X     X  O  O  X  O|
+|X  X  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 2, 3, 0, 3, 3, 2, 2, 4, 0, 0, 3, 4, 4, 4, 6, 6, 4, 3, 6, 0, 0, 6, 1, 2, 4, 6, 6, 0, 2, 5, 5]
+Player 1 won in 7 moves
+_____________________
+|      O  O  X      |
+|      X  X  X  O   |
+|      X  X  O  X  X|
+|   O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 5, player 1 should win in 5 at most move(s)
+_____________________
+|      O  O  X  X   |
+|      X  X  X  O   |
+|      X  X  O  X  X|
+|   O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  X  O   |
+|      X  X  O  X  X|
+|O  O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  X  O   |
+|X     X  X  O  X  X|
+|O  O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  X  O  O|
+|X     X  X  O  X  X|
+|O  O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  X  O  O|
+|X  X  X  X  O  X  X|
+|O  O  O  X  O  O  O|
+|X  X  O  O  X  O  X|
+|O  X  O  X  X  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 4, 5, 1, 2, 4, 4, 3, 2, 3, 2, 2, 4, 3, 3, 1, 1, 4, 5, 2, 2, 4, 0, 0, 6, 6, 6, 6, 5, 5, 5, 5, 0, 0, 6, 1]
+Player 1 won in 5 moves
+_____________________
+|   O  X  O     X  X|
+|   O  O  O     X  O|
+|   O  O  X     X  X|
+|   X  O  X     O  X|
+|   X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 6, player 2 should win in 3 at most move(s)
+_____________________
+|   O  X  O     X  X|
+|   O  O  O     X  O|
+|   O  O  X     X  X|
+|   X  O  X     O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   O  X  O     X  X|
+|   O  O  O     X  O|
+|   O  O  X     X  X|
+|X  X  O  X     O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   O  X  O     X  X|
+|   O  O  O     X  O|
+|O  O  O  X     X  X|
+|X  X  O  X     O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   O  X  O     X  X|
+|X  O  O  O     X  O|
+|O  O  O  X     X  X|
+|X  X  O  X     O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O     X  X|
+|X  O  O  O     X  O|
+|O  O  O  X     X  X|
+|X  X  O  X     O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O     X  X|
+|X  O  O  O     X  O|
+|O  O  O  X     X  X|
+|X  X  O  X  X  O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O     X  X|
+|X  O  O  O     X  O|
+|O  O  O  X  O  X  X|
+|X  X  O  X  X  O  X|
+|O  X  X  O  X  O  O|
+|O  O  X  X  X  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 3, 2, 1, 1, 5, 3, 5, 3, 5, 5, 3, 2, 2, 4, 2, 1, 2, 2, 1, 5, 3, 4, 0, 5, 1, 6, 6, 6, 1, 6, 6, 6, 0, 0, 0, 0, 0, 4, 4]
+Player 2 won in 7 moves
+_____________________
+|                   |
+|      X  X         |
+|X     O  O         |
+|X     O  O     X   |
+|O     X  X     O   |
+|X     O  X     O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 5, player 2 should win in 9 at most move(s)
+_____________________
+|                   |
+|      X  X         |
+|X     O  O         |
+|X     O  O     X   |
+|O     X  X     O   |
+|X     O  X  O  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X         |
+|X     O  O         |
+|X     O  O     X   |
+|O     X  X  X  O   |
+|X     O  X  O  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X         |
+|X     O  O         |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X         |
+|X     O  O         |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X         |
+|X     O  O  O      |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X         |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|      X  X  O      |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|            X      |
+|      X  X  O      |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O     X      |
+|      X  X  O      |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O   |
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O     X      |
+|      X  X  O      |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O     X      |
+|      X  X  O  O   |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O     X  X   |
+|      X  X  O  O   |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  O  O   |
+|X     O  O  O  X   |
+|X     O  O  O  X   |
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  O  O   |
+|X     O  O  O  X   |
+|X     O  O  O  X  X|
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|      X  X  O  O   |
+|X     O  O  O  X  O|
+|X     O  O  O  X  X|
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O  O  X  X   |
+|X     X  X  O  O   |
+|X     O  O  O  X  O|
+|X     O  O  O  X  X|
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  O  X  X   |
+|X     X  X  O  O   |
+|X     O  O  O  X  O|
+|X     O  O  O  X  X|
+|O     X  X  X  O  X|
+|X     O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  O  X  X   |
+|X     X  X  O  O   |
+|X     O  O  O  X  O|
+|X     O  O  O  X  X|
+|O     X  X  X  O  X|
+|X  X  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     O  O  X  X   |
+|X     X  X  O  O   |
+|X     O  O  O  X  O|
+|X     O  O  O  X  X|
+|O  O  X  X  X  O  X|
+|X  X  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 2, 3, 3, 2, 0, 0, 0, 2, 2, 5, 0, 5, 5, 4, 4, 4, 6, 4, 5, 4, 4, 2, 6, 5, 5, 3, 6, 6, 0, 0, 1, 1]
+Player 2 won in 19 moves
+_____________________
+|                   |
+|   O               |
+|   X     X     O   |
+|   X     O     O   |
+|   O     X     X   |
+|   O     X     O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 5, player 1 should win in 9 at most move(s)
+_____________________
+|                   |
+|   O           X   |
+|   X     X     O   |
+|   X     O     O   |
+|   O     X     X   |
+|   O     X     O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X   |
+|   X     X     O   |
+|   X     O     O   |
+|   O     X     X  O|
+|   O     X     O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X   |
+|   X     X     O   |
+|   X     O     O  X|
+|   O     X     X  O|
+|   O     X     O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X   |
+|   X     X     O   |
+|   X     O     O  X|
+|   O     X     X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X   |
+|   X     X     O  X|
+|   X     O     O  X|
+|   O     X     X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X  O|
+|   X     X     O  X|
+|   X     O     O  X|
+|   O     X     X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X  O|
+|   X     X     O  X|
+|   X     O     O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X  O|
+|   X     X     O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                   |
+|   O           X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|                  O|
+|   O           X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O           X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O        O  X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O     X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O        O  X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O     X  X  X  O|
+|   O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O        O  X  O|
+|   X     X  X  O  X|
+|   X     O  O  O  X|
+|   O  O  X  X  X  O|
+|   O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O        O  X  O|
+|   X     X  X  O  X|
+|   X  X  O  O  O  X|
+|   O  O  X  X  X  O|
+|   O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O        O  X  O|
+|   X  O  X  X  O  X|
+|   X  X  O  O  O  X|
+|   O  O  X  X  X  O|
+|   O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|   X  X  O  O  O  X|
+|   O  O  X  X  X  O|
+|   O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|   X  X  O  O  O  X|
+|   O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|   X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|               X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X        X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      X     O  X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   X  X     O  X  O|
+|   O  X     O  X  O|
+|   X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   X  X     O  X  O|
+|   O  X     O  X  O|
+|O  X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   X  X     O  X  O|
+|X  O  X     O  X  O|
+|O  X  O  X  X  O  X|
+|O  X  X  O  O  O  X|
+|X  O  O  X  X  X  O|
+|O  O  X  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 5, 3, 3, 5, 1, 3, 1, 1, 5, 1, 1, 6, 5, 5, 6, 6, 4, 6, 6, 4, 4, 4, 6, 5, 4, 2, 2, 2, 2, 2, 0, 0, 0, 2, 4, 1, 0, 0]
+Player 1 won in 25 moves
+_____________________
+|O        O         |
+|X     O  X     X   |
+|X     X  X     O   |
+|X     X  O     X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 3, player 1 should win in 3 at most move(s)
+_____________________
+|O     X  O         |
+|X     O  X     X   |
+|X     X  X     O   |
+|X     X  O     X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O         |
+|X     O  X     X   |
+|X     X  X     O   |
+|X     X  O     X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O         |
+|X     O  X     X   |
+|X     X  X     O   |
+|X     X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O         |
+|X     O  X     X   |
+|X     X  X  O  O   |
+|X     X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O         |
+|X     O  X  X  X   |
+|X     X  X  O  O   |
+|X     X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O     O   |
+|X     O  X  X  X   |
+|X     X  X  O  O   |
+|X     X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X  O   |
+|X     O  X  X  X   |
+|X     X  X  O  O   |
+|X     X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X  O   |
+|X     O  X  X  X   |
+|X     X  X  O  O   |
+|X  O  X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O     X  O  X  O   |
+|X     O  X  X  X   |
+|X  X  X  X  O  O   |
+|X  O  X  O  X  X   |
+|O  O  O  X  O  O   |
+|X  X  O  X  O  O  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 3, 2, 2, 5, 2, 2, 0, 5, 5, 0, 0, 4, 1, 1, 0, 4, 0, 0, 3, 5, 5, 3, 2, 6, 4, 4, 4, 5, 4, 1, 1]
+Player 1 won in 9 moves
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X      |
+|   X     O  X      |
+|X  O     X  O  X   |
+|O  O     X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 0, player 2 should win in 9 at most move(s)
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X      |
+|   X     O  X      |
+|X  O     X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X      |
+|   X     O  X  X   |
+|X  O     X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X  O   |
+|   X     O  X  X   |
+|X  O     X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X  O   |
+|X  X     O  X  X   |
+|X  O     X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X      |
+|   X     O  X  O   |
+|X  X     O  X  X   |
+|X  O  O  X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X  X   |
+|   X     O  X  O   |
+|X  X     O  X  X   |
+|X  O  O  X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|         X  O      |
+|   O     O  X  X   |
+|   X     O  X  O   |
+|X  X  O  O  X  X   |
+|X  O  O  X  O  X   |
+|O  O  O  X  O  X   |
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 1, 3, 3, 5, 4, 5, 4, 4, 3, 4, 3, 3, 1, 4, 4, 1, 0, 1, 1, 0, 2, 5, 5, 0, 2, 5, 2]
+Player 2 won in 7 moves
+_____________________
+|   O     O  X      |
+|O  X     X  O     O|
+|X  O     O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 2, player 2 should win in 3 at most move(s)
+_____________________
+|   O     O  X      |
+|O  X     X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|   O     O  X      |
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O     O  X      |
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O  X      |
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O  X     O|
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O     O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O  X     O|
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X     O|
+|X  O  X  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|O  O  X  O  X     O|
+|O  X  X  X  O     O|
+|X  O  O  O  X     X|
+|X  X  X  O  O     X|
+|O  X  O  X  X  O  O|
+|X  O  X  X  O  X  O|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 4, 3, 3, 4, 3, 3, 4, 0, 1, 4, 6, 1, 6, 6, 0, 1, 1, 6, 6, 0, 3, 0, 0, 1, 4, 4, 1, 2, 2, 2, 2, 2, 0, 2, 6, 5, 5]
+Player 2 won in 7 moves
+_____________________
+|      O        X   |
+|X     X  X     O   |
+|X     X  O     O   |
+|O     O  O     X   |
+|O     X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 1, in column 0, player 2 should win in 5 at most move(s)
+_____________________
+|      O        X   |
+|X     X  X     O   |
+|X     X  O     O   |
+|O     O  O  O  X   |
+|O     X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X   |
+|X     X  X     O   |
+|X     X  O  X  O   |
+|O     O  O  O  X   |
+|O     X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X   |
+|X     X  X  O  O   |
+|X     X  O  X  O   |
+|O     O  O  O  X   |
+|O     X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X   |
+|X     X  X  O  O   |
+|X     X  O  X  O   |
+|O     O  O  O  X  X|
+|O     X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|      O        X   |
+|X     X  X  O  O   |
+|X     X  O  X  O   |
+|O     O  O  O  X  X|
+|O  O  X  X  O  X  O|
+|X  O  O  X  O  X  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 2, 3, 3, 2, 3, 3, 2, 5, 4, 5, 4, 5, 5, 0, 0, 2, 0, 0, 5, 5, 1, 6, 6, 2, 2, 0, 4, 4, 4, 6, 1]
+Player 2 won in 5 moves
+_____________________
+|X     X  O        X|
+|O     O  X  X     O|
+|X     X  O  O     X|
+|X     O  O  X     O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+Last move by player 2, in column 5, player 1 should win in 3 at most move(s)
+_____________________
+|X     X  O  X     X|
+|O     O  X  X     O|
+|X     X  O  O     X|
+|X     O  O  X     O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X     X|
+|O     O  X  X     O|
+|X     X  O  O     X|
+|X     O  O  X  O  O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X     X|
+|O     O  X  X     O|
+|X     X  O  O  X  X|
+|X     O  O  X  O  O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X     X|
+|O     O  X  X  O  O|
+|X     X  O  O  X  X|
+|X     O  O  X  O  O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X  X  X|
+|O     O  X  X  O  O|
+|X     X  O  O  X  X|
+|X     O  O  X  O  O|
+|O     X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X  X  X|
+|O     O  X  X  O  O|
+|X     X  O  O  X  X|
+|X     O  O  X  O  O|
+|O  O  X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+_____________________
+|X     X  O  X  X  X|
+|O     O  X  X  O  O|
+|X     X  O  O  X  X|
+|X  X  O  O  X  O  O|
+|O  O  X  X  O  O  X|
+|X  O  O  X  O  O  X|
+|===================|
+|0  1  2  3  4  5  6|
+
+[3, 4, 3, 3, 0, 2, 2, 4, 4, 3, 3, 2, 2, 0, 0, 4, 4, 2, 0, 0, 6, 1, 6, 6, 6, 6, 6, 3, 2, 5, 0, 5, 4, 5, 5, 5, 5, 1, 1]
+Player 1 won in 7 moves
+
+
+======================== 1 passed in 641.23s (0:10:41) =========================
+
+Process finished with exit code 0
