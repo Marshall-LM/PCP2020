@@ -33,7 +33,7 @@ def generate_move_mcts(board: Board, player: BoardPiece,
         action = np.floor(np.median(np.arange(bd_shp[1])))
         return PlayerAction(action), saved_state
 
-    # Convert the board to bitmaps and define the min_player board
+    # Convert the board to bitmaps and define the max_player board
     max_board, mask_board = board_to_bitmap(board, player)
     # Create a root node
     root_mcts = Connect4Node(max_board, mask_board, bd_shp, -1, True)
@@ -146,7 +146,6 @@ class Connect4Node:
         self.actions: List[int] = valid_actions(self.mask, board_shp)
         np.random.shuffle(self.actions)
         self.children: List[Connect4Node] = []
-        self.children_ucb1: List[float] = []
 
         # Upper Confidence Bound 1 (UCB1) attributes
         self.si: float = 0

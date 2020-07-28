@@ -3,9 +3,10 @@ from agents.common_arrays import top_row
 from agents.common_arrays import PlayerAction, Board, BoardPiece, SavedState, GenMove
 # from agents.agent_minimax import generate_move
 # from agents.agent_alpha_beta import generate_move, generate_move2
-from agents.agent_alpha_beta import generate_move
-from agents.agent_alpha_beta import generate_move as gen_move_ab
-from agents.agent_mcts import generate_move as gen_move_mcts
+# from agents.agent_alpha_beta import generate_move
+# from agents.agent_alpha_beta import generate_move as gen_move_ab
+# from agents.agent_mcts import generate_move as gen_move_mcts
+from agents.agent_mcts import generate_move
 
 
 def user_move(board: Board, _player: BoardPiece,
@@ -124,9 +125,9 @@ def human_vs_agent(generate_move_1: GenMove,
 
 if __name__ == "__main__":
     # human_vs_agent(user_move)
-    # human_vs_agent(generate_move)
+    human_vs_agent(generate_move)
     # human_vs_agent(generate_move, generate_move)
-    human_vs_agent(gen_move_ab, gen_move_mcts)
+    # human_vs_agent(gen_move_ab, gen_move_mcts)
 
 # import cProfile
 
