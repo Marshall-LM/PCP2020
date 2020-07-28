@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from gmpy2 import popcount
 from agents.common import Board, BoardPiece, Bitmap, PlayerAction, \
     SavedState, NO_PLAYER, GameState, board_to_bitmap, check_end_state, \
-    apply_action_cp
+    apply_action_cp, valid_actions
 
 GameScore = np.int
 
@@ -64,28 +64,26 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
     # If the node is at the max depth or a terminal node calculate the score
     max_depth = 7
     win_score = 150
-    state_p = check_end_state(board, mask, board_shp)
+    state_p = check_end_state(board ^ mask, mask, board_shp)
     if state_p == GameState.IS_WIN:
         if max_player:
-            return GameScore(win_score), None
-        else:
             return GameScore(-win_score), None
+        else:
+            return GameScore(win_score), None
     elif state_p == GameState.IS_DRAW:
         return 0, None
     elif depth == max_depth:
         return heuristic_solver_bits(board, mask, board_shp[0], max_player), None
 
     # For each potential action, call alpha_beta
+    pot_actions = valid_actions(mask, board_shp)
     if max_player:
         score = -100000
         action = -1
-        for col in range(board_shp[1]):
-            # Apply the current action, continue if column is full
-            try:
-                min_board, new_mask = apply_action_cp(board, mask,
-                                                      col, board_shp)
-            except IndexError:
-                continue
+        for col in pot_actions:
+            # Apply the current action
+            min_board, new_mask = apply_action_cp(board, mask,
+                                                  col, board_shp)
             # Call alpha-beta
             new_score, temp = alpha_beta(min_board, new_mask, False, depth + 1,
                                          alpha, beta, board_shp)
@@ -105,13 +103,10 @@ def alpha_beta(board: Bitmap, mask: Bitmap, max_player: bool, depth: int,
     else:
         score = 100000
         action = -1
-        for col in range(board_shp[1]):
-            # Apply the current action, continue if column is full
-            try:
-                max_board, new_mask = apply_action_cp(board, mask,
-                                                      col, board_shp)
-            except IndexError:
-                continue
+        for col in pot_actions:
+            # Apply the current action
+            max_board, new_mask = apply_action_cp(board, mask,
+                                                  col, board_shp)
             # Call alpha-beta
             new_score, temp = alpha_beta(max_board, new_mask, True, depth + 1,
                                          alpha, beta, board_shp)

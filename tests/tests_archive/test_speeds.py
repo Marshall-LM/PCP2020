@@ -4,8 +4,8 @@ from agents.common_arrays import initialize_game_state, switch_player, \
     apply_player_action, PLAYER1
 # from agents.agent_alpha_beta.agent_alpha_beta import heuristic_solver, \
 #     heuristic_solver_bits
-from agents.agent_alpha_beta.alpha_beta_archive.alpha_beta_experiment import heuristic_solver, \
-    heuristic_solver_bits
+from agents.agent_alpha_beta.alpha_beta_archive.alpha_beta_experiment \
+    import heuristic_solver, heuristic_solver_bits
 import cProfile
 
 
@@ -31,7 +31,7 @@ def test_heuristic_speeds():
                       globals=dict(bit_solver=heuristic_solver_bits,
                                    board=test_board,
                                    player=PLAYER1))
-    print('\nThe bit solver takes {:0.3} seconds to run'.format(run_time))
+    print('\nBit solver takes {:0.3} seconds'.format(run_time))
 
     # Use setup argument if adding @njit before function (compile before runtime)
     run_time = timeit('loop_solver(board, player, True)',
@@ -40,7 +40,7 @@ def test_heuristic_speeds():
                       globals=dict(loop_solver=heuristic_solver,
                                    board=test_board,
                                    player=PLAYER1))
-    print('The loop solver takes {:0.3} seconds to run'.format(run_time))
+    print('Numba loop solver takes {:0.3} seconds'.format(run_time))
 
 
 def test_alpha_beta_speed():

@@ -189,6 +189,8 @@ def test_connect_four_bits():
         # board_str = cm.pretty_print_board(arr_board)
         # print('')
         # print(board_str)
+        # # Print the game state
+        # print(cm.check_end_state((bit_b ^ bit_m), bit_m, bd_shp))
         # Check for a win
         assert cm.connect_four((bit_b ^ bit_m), bd_shp[0])
 
@@ -301,21 +303,6 @@ def test_check_top_row():
             arr_b, bit_b, bit_m, player = generate_full_board(player)
             for col in range(arr_b.shape[1]):
                 assert cm.check_top_row(bit_m, col, arr_b.shape)
-
-        # # Generate a full board
-        # arr_b, bit_b, bit_m, player = generate_full_board(arr_b, player)
-        # # Randomly choose a column to flip
-        # fcol = np.random.choice(arr_b.shape[1])
-        # for col in range(arr_b.shape[1]):
-        #     if col == fcol:
-        #         if np.random.uniform() < p_flip:
-        #             bit_pos = fcol * arr_b.shape[1] + arr_b.shape[0] - 1
-        #             bit_m = bit_flip(bit_m, bit_pos)
-        #             assert not cm.check_top_row(bit_m, col, arr_b.shape)
-        #         else:
-        #             assert cm.check_top_row(bit_m, col, arr_b.shape)
-        #     else:
-        #         assert cm.check_top_row(bit_m, col, arr_b.shape)
 
 
 def test_valid_actions():
