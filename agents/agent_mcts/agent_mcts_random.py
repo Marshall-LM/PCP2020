@@ -60,7 +60,7 @@ def mcts(root_node):
     #  performance
     start_time = time()
     curr_time = time()
-    while (curr_time - start_time) < 1.0:
+    while (curr_time - start_time) < 3.0:
         max_win = root_node.traverse()
         if max_win:
             root_node.wi += 1
